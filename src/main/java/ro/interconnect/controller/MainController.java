@@ -24,4 +24,14 @@ public class MainController {
     public String loginPage() {
         return "login.jsp";
     }
+    
+    @RequestMapping(value = "/meniu", method = RequestMethod.GET)
+    public String meniu() {
+        return "meniu.jsp";
+    }
+    
+    @RequestMapping(value = "/header", method = RequestMethod.GET)
+    public String header() {
+        return "header.jsp";
+    }
 }

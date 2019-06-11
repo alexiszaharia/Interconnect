@@ -9,11 +9,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <head>
-    <link rel="stylesheet" href="resources/css/bootstrap/bootstrap.min.css"/>
-    <link rel="stylesheet" href="resources/css/font_awesome/css/all.css"/>
-    <link rel="stylesheet" href="resources/css/general.css"/>
-    <script src="resources/js/bootstrap/bootstrap.min.js"></script>
-    <script src="resources/js/jquery/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/font_awesome/css/all.css"/>
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/general.css"/>
+    <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/jquery/jquery-3.4.1.min.js"></script>
 </head>
 
 <nav class="navbar navbar-default">
@@ -24,9 +24,9 @@
         </button>
         <div class="collapse navbar-collapse" id="meniu_principal">
             <ul class="nav navbar-nav">
-                <li><a href="home"><i class="fas fa-home"></i> &nbsp; Acasa</a></li>
+                <li><a href="<%=request.getContextPath()%>/home"><i class="fas fa-home"></i> &nbsp; Acasa</a></li>
                 <%if(request.getParameter("role").equals("[ROLE_CETATEAN]")) {%>
-                    <li><a href="home"><i class="fas fa-newspaper"></i> &nbsp; Stiri</a></li>
+                    <li><a href="<%=request.getContextPath()%>/news"><i class="fas fa-newspaper"></i> &nbsp; Stiri</a></li>
                 <%}%>
             </ul>
         </div>

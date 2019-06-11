@@ -6,10 +6,12 @@
 package ro.interconnect.config;
 
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -33,9 +35,15 @@ public class ProjectConfig {
     }
     
     @Bean
+    @Autowired
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+    
+    @Bean
     public ConfigurareDetalii configurareDetalii() {
         ConfigurareDetalii configurareDetalii = new ConfigurareDetalii();
-        configurareDetalii.setNrElemPePagina(20);
+        configurareDetalii.setNrElemPePagina(1);
         
         return configurareDetalii;
     }

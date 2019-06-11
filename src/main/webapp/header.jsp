@@ -9,7 +9,7 @@
 <nav class="navbar navbar-default" style="margin-bottom: 0px;">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand logo" href="home">INTERCONNECT</a>
+            <a class="navbar-brand logo" href="<%=request.getContextPath()%>/home">INTERCONNECT</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li>
@@ -17,7 +17,7 @@
                     <i class="fas fa-user"></i> &nbsp; ${pageContext.request.userPrincipal.name}
                 </a>
             </li>
-            <li><a href="logout" title="Delogare"><i class="fas fa-power-off"></i></a></li>
+            <li><a href="<%=request.getContextPath()%>/logout" title="Delogare"><i class="fas fa-power-off"></i></a></li>
         </ul>
     </div>
 </nav>

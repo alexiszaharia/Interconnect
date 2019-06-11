@@ -1,6 +1,6 @@
 <%-- 
-    Document   : home
-    Created on : Jun 8, 2019, 12:04:26 PM
+    Document   : detailed_news
+    Created on : Jun 11, 2019, 6:58:12 PM
     Author     : Alexis
 --%>
 
@@ -10,10 +10,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Acasa</title>
+        <title>Stiri</title>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/bootstrap/bootstrap.min.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/font_awesome/css/all.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/general.css"/>
+        <link rel="stylesheet" href="<%=request.getContextPath()%>/cetatean/css/cetatean.css"/>
         <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/resources/js/jquery/jquery-3.4.1.min.js"></script>
     </head>
@@ -27,7 +28,15 @@
                     </jsp:include>
                 </div>
                 <div class="col-sm-10">
-                    <h1>Acasa</h1>
+                    <div class="container" style="width: 80%;">
+                        <h2>${stire.getTitluStire()}</h2>
+                        <p class="categorie">CATEGORIE: ${stire.getTipStire()}</p>
+                        <p class="data">${stire.getDataPublicareFormatata()}</p>
+                        <br/>
+                        <div style="margin-bottom: 50px;">
+                            ${stire.getContinutStire()}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
