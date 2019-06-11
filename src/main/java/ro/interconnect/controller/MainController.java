@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MainController {
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String homePage() {
-        return "home";
+        return "home.jsp";
     }
     
-    @RequestMapping(value = {"/login", "/"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginPage() {
-        return "login";
+        return "login.jsp";
     }
 }

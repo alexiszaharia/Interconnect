@@ -31,4 +31,12 @@ public class ProjectConfig {
         dataSource.setPassword("123456");
         return dataSource;
     }
+    
+    @Bean
+    public ConfigurareDetalii configurareDetalii() {
+        ConfigurareDetalii configurareDetalii = new ConfigurareDetalii();
+        configurareDetalii.setNrElemPePagina(20);
+        
+        return configurareDetalii;
+    }
 }
