@@ -21,7 +21,7 @@ public class Stire {
     private String previewStire;
     private String titluStire;
     private String dataPublicareFormatata;
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     public Stire() {
     }

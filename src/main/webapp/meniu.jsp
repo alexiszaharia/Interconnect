@@ -26,7 +26,42 @@
             <ul class="nav navbar-nav">
                 <li><a href="<%=request.getContextPath()%>/home"><i class="fas fa-home"></i> &nbsp; Acasa</a></li>
                 <%if(request.getParameter("role").equals("[ROLE_CETATEAN]")) {%>
-                    <li><a href="<%=request.getContextPath()%>/news"><i class="fas fa-newspaper"></i> &nbsp; Stiri</a></li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/news">
+                            <i class="fas fa-newspaper"></i> &nbsp; Stiri
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/initiative_administratie">
+                            <i class="fas fa-tasks"></i> &nbsp; Initiative administratie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/initiative_cetateni">
+                            <i class="fas fa-users"></i> &nbsp; Initiative cetateni
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/creare_initiativa">
+                            <i class="fas fa-paste"></i> &nbsp; Creare initiativa
+                        </a>
+                    </li>
+                <%} else if(request.getParameter("role").equals("[ROLE_ADMINISTRATIE_PUBLICA]")) {%>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/initiative_administratie">
+                            <i class="fas fa-tasks"></i> &nbsp; Initiative administratie
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/initiative_cetateni">
+                            <i class="fas fa-users"></i> &nbsp; Initiative cetateni
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<%=request.getContextPath()%>/creare_initiativa">
+                            <i class="fas fa-paste"></i> &nbsp; Creare initiativa
+                        </a>
+                    </li>
                 <%}%>
             </ul>
         </div>

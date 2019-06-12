@@ -5,6 +5,7 @@
  */
 package ro.interconnect.dao;
 
+import ro.interconnect.mapper.MapperStire;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
