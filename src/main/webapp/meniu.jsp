@@ -82,6 +82,11 @@
                         <i class="fas fa-paste"></i> &nbsp; Creare initiativa
                     </a>
                 </li>
+                <li>
+                    <a href="<%=request.getContextPath()%>/pagina_adaugare_stire">
+                        <i class="fas fa-plus-square"></i> &nbsp; Adaugare stire
+                    </a>
+                </li>
                 <%}%>
             </ul>
         </div>

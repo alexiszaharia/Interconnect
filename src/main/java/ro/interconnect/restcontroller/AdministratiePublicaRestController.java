@@ -10,8 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ro.interconnect.beans.RestResponse;
 import ro.interconnect.dao.ReferendumDao;
+import ro.interconnect.dao.StireDao;
 import ro.interconnect.dao.UserDao;
 import ro.interconnect.db.OptiuneReferendum;
 import ro.interconnect.db.Referendum;
+import ro.interconnect.db.Stire;
 import ro.interconnect.db.User;
 
 /**
@@ -35,6 +35,8 @@ public class AdministratiePublicaRestController {
     private ReferendumDao referendumDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private StireDao stireDao;
     
     @RequestMapping(value = "/adaugare_referendum", method = RequestMethod.POST, 
             produces = "application/json; charset=UTF-8")
@@ -74,6 +76,36 @@ public class AdministratiePublicaRestController {
         
         
         boolean ok = referendumDao.insertReferendum(referendum);
+        if (ok) {
+            raspuns.setCodRetur(0);
+        } else {
+            raspuns.setCodRetur(-1);
+            raspuns.setMesajConsola("Eroare la adaugarea referendumului!");
+        }
+        
+        return raspuns;
+    }
+    
+    @RequestMapping(value = "/adaugare_stire", method = RequestMethod.POST, 
+            produces = "application/json; charset=UTF-8")
+    @PreAuthorize("hasRole('ADMINISTRATIE_PUBLICA')")
+    public RestResponse<Object> adaugareStire(@RequestParam(value = "numeUser") String numeUser, 
+            @RequestParam(value = "titluStire") String titluStire, 
+            @RequestParam(value = "previewStire") String previewStire, 
+            @RequestParam(value = "tipStire") String tipStire, 
+            @RequestParam(value = "continutStire") String continutStire) {
+        RestResponse<Object> raspuns = new RestResponse<>();
+                
+        User user = userDao.getUser(numeUser);
+        Stire stire = new Stire();
+        stire.setTitluStire(titluStire);
+        stire.setPreviewStire(previewStire);
+        stire.setTipStire(tipStire);
+        stire.setContinutStire(continutStire);
+        stire.setUserPublicare(user.getId());        
+        
+        boolean ok = stireDao.insertStire(stire);
+        
         if (ok) {
             raspuns.setCodRetur(0);
         } else {

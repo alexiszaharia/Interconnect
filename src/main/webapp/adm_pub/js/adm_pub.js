@@ -11,7 +11,7 @@ function adaugareReferendum(numeUser) {
     var intrebare = $('#intrebare_referendum').val();
     var data = $('#data_referendum').val();
     var optiuni = getOptiuni();
-    
+
     $('#alerta_adaugare_referendum').removeClass('alert-success');
     $('#alerta_adaugare_referendum').removeClass('alert-danger');
     $('#alerta_adaugare_referendum').empty();
@@ -29,7 +29,7 @@ function adaugareReferendum(numeUser) {
         $('#alerta_adaugare_referendum').html('Trebuie completata data!');
         return;
     }
-    
+
     if (optiuni == false) {
         $('#alerta_adaugare_referendum').css('display', '');
         $('#alerta_adaugare_referendum').addClass('alert-danger');
@@ -95,4 +95,85 @@ function getOptiuni() {
     } else {
         return optiuni;
     }
+}
+
+function adaugareStire(numeUser) {
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+
+    var titluStire = $('#titlu_stire').val();
+    var previewStire = $('#preview_stire').val();
+    var tipStire = $('#tip_stire option:selected').val();
+    var continutStire = $('#continut_stire').val();
+
+    $('#alerta_adaugare_stire').removeClass('alert-success');
+    $('#alerta_adaugare_stire').removeClass('alert-danger');
+    $('#alerta_adaugare_stire').empty();
+
+    if (titluStire == '') {
+        $('#alerta_adaugare_stire').css('display', '');
+        $('#alerta_adaugare_stire').addClass('alert-danger');
+        $('#alerta_adaugare_stire').html('Titlul nu poate fi gol!');
+        return;
+    }
+
+    if (previewStire == '') {
+        $('#alerta_adaugare_stire').css('display', '');
+        $('#alerta_adaugare_stire').addClass('alert-danger');
+        $('#alerta_adaugare_stire').html('Preview-ul nu poate fi gol!');
+        return;
+    }
+
+    if (tipStire == undefined || tipStire == '') {
+        $('#alerta_adaugare_stire').css('display', '');
+        $('#alerta_adaugare_stire').addClass('alert-danger');
+        $('#alerta_adaugare_stire').html('Trebuie selectat un tip de stire!');
+        return;
+    }
+
+    if (continutStire == '') {
+        $('#alerta_adaugare_stire').css('display', '');
+        $('#alerta_adaugare_stire').addClass('alert-danger');
+        $('#alerta_adaugare_stire').html('Continutul stirii nu poate fi gol!');
+        return;
+    }
+
+    var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
+            + '&tipStire=' + tipStire + '&continutStire=' + continutStire
+            + '&numeUser=' + numeUser;
+
+    $.ajax({
+        type: 'POST',
+        url: root + "/adaugare_stire",
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        dataType: 'json',
+        data: datePost,
+        success: function (data, textStatus, jqXHR) {
+            if (data.codRetur == 0) {
+                $('#titlu_stire').val('');
+                $('#preview_stire').val('');
+                $('#continut_stire').val('');
+
+                $('#alerta_adaugare_stire').css('display', '');
+                $('#alerta_adaugare_stire').addClass('alert-success');
+                $('#alerta_adaugare_stire').html('S-a adaugat stirea!');
+            } else {
+                console.log("Eroare la adaugarea stirii: " + data.mesajConsola);
+
+                $('#alerta_adaugare_stire').css('display', '');
+                $('#alerta_adaugare_stire').addClass('alert-danger');
+                $('#alerta_adaugare_stire').html('Nu s-a adaugat stirea! EROARE SERVER');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Eroare la adaugarea stirii");
+
+            $('#alerta_adaugare_stire').css('display', '');
+            $('#alerta_adaugare_stire').addClass('alert-danger');
+            $('#alerta_adaugare_stire').html('Nu s-a adaugat stirea! EROARE SERVER');
+        }
+    });
 }

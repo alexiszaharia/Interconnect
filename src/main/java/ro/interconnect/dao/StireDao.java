@@ -69,4 +69,26 @@ public class StireDao {
 
         return nrStiri;
     }
+    
+    public boolean insertStire(Stire stire) {
+        String sql = "INSERT INTO stiri (continut_stire, data_publicare, user_publicare, tip_stire, "
+                + "preview, titlu_stire) "
+                + "VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?)";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, stire.getContinutStire(), stire.getUserPublicare(), 
+                    stire.getTipStire(), stire.getPreviewStire(), stire.getTitluStire());
+            if (rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare insertStire: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
 }
