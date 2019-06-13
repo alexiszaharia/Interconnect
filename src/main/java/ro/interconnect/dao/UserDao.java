@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ro.interconnect.db.User;
+import ro.interconnect.enums.RoluriUtilizatori;
 import ro.interconnect.mapper.MapperUser;
 
 /**
@@ -50,5 +51,20 @@ public class UserDao {
         }
         
         return user;
+    }
+    
+    public int getNrUseri(RoluriUtilizatori roluriUtilizatori) {
+        String sql = "SELECT COUNT(*) FROM user_roles "
+                + "WHERE role LIKE ?";
+        int nrUtilizatori = 0;
+        
+        try {
+            nrUtilizatori = jdbcTemplate.queryForObject(sql, Integer.class, roluriUtilizatori.getRol());
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda getNrUseri(rol): " + e.getMessage());
+            return 0;
+        }
+        
+        return nrUtilizatori;
     }
 }

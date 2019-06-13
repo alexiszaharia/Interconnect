@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ro.interconnect.beans.RestResponse;
 import ro.interconnect.dao.InitiativaDao;
 import ro.interconnect.dao.OpinieDao;
+import ro.interconnect.dao.ReferendumDao;
 import ro.interconnect.dao.UserDao;
 import ro.interconnect.dao.VoturiInitiativeDao;
+import ro.interconnect.dao.VoturiReferendumDao;
+import ro.interconnect.db.OptiuneReferendum;
+import ro.interconnect.db.Referendum;
 import ro.interconnect.db.User;
 
 /**
@@ -32,6 +36,10 @@ public class ComunRestController {
     private VoturiInitiativeDao voturiInitiativeDao;
     @Autowired
     private InitiativaDao initiativaDao;
+    @Autowired
+    private ReferendumDao referendumDao;
+    @Autowired
+    private VoturiReferendumDao voturiReferendumDao;
     
     @RequestMapping(value = "/adaugare_opinie_initiativa", method = RequestMethod.POST, 
             produces = "application/json; charset=UTF-8")
@@ -114,6 +122,27 @@ public class ComunRestController {
             raspuns.setCodRetur(-1);
             raspuns.setMesajConsola("Eroare la adaugarea initiativei");
         }
+        
+        return raspuns;
+    }
+    
+    @RequestMapping(value = "/statistica_referendum", method = RequestMethod.POST, 
+            produces = "application/json; charset=UTF-8")
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public RestResponse<Referendum> getStatisticaReferendum(
+            @RequestParam(value = "id_referendum") int idReferendum) {
+        RestResponse<Referendum> raspuns = new RestResponse<>();
+        Referendum referendum = new Referendum();
+        referendum = referendumDao.getReferendum(idReferendum);
+        referendum.setProcentParticipare(voturiReferendumDao.getProcentPrezentaReferendum(idReferendum));
+        for(OptiuneReferendum optiuneReferendum: referendum.getListaOptiuni()) {
+            optiuneReferendum.setProcentVot(
+                    voturiReferendumDao.getProcentVotOptiune(
+                            optiuneReferendum.getIdOptiune(), idReferendum));
+        }
+        
+        raspuns.setCodRetur(0);
+        raspuns.setObjectResponse(referendum);
         
         return raspuns;
     }

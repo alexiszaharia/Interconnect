@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import ro.interconnect.config.ConfigurareDetalii;
 import ro.interconnect.dao.InitiativaDao;
 import ro.interconnect.dao.OpinieDao;
+import ro.interconnect.dao.ReferendumDao;
 import ro.interconnect.dao.UserDao;
 import ro.interconnect.dao.VoturiInitiativeDao;
 import ro.interconnect.db.Initiativa;
 import ro.interconnect.db.Opinie;
+import ro.interconnect.db.Referendum;
 import ro.interconnect.db.User;
 import ro.interconnect.enums.RoluriUtilizatori;
 
@@ -40,6 +42,8 @@ public class ComunController {
     private UserDao userDao;
     @Autowired
     private VoturiInitiativeDao voturiInitiativeDao;
+    @Autowired
+    private ReferendumDao referendumDao;
     
     //--------------------------------- ADMINISTRATIE PUBLICA -----------------------------------
     
@@ -187,5 +191,68 @@ public class ComunController {
     @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
     public String pageAdaugareInitiativa() {
         return "comun/adaugare_initiativa.jsp";
+    }
+    
+    //--------------------------------- ISTORIC REFERENDUMURI -----------------------------------
+    @RequestMapping(value = "/istoric_referendumuri", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String istoricReferendumuriPage(Model model) {
+        int paginaCurenta = 1;
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute())
+                .doubleValue();
+        totalPagini = Math.ceil(nrReferendumuri / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<Referendum> listaReferendumuri = referendumDao.getListaReferendumuriTrecutePePagina(
+                1, configurareDetalii.getNrElemPePagina());
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaReferendumuri", listaReferendumuri);
+        
+        return "comun/istoric_referendumuri.jsp";
+    }
+    
+    @RequestMapping(value = "/istoric_referendumuri/{pagina}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String istoricReferendumuriPageSelected(
+            @PathVariable(value = "pagina") String strPaginaCurenta, Model model) {
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute())
+                .doubleValue();
+        totalPagini = Math.ceil(nrReferendumuri / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<Referendum> listaReferendumuri = referendumDao.getListaReferendumuriTrecutePePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
+                paginaCurenta * configurareDetalii.getNrElemPePagina());
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaReferendumuri", listaReferendumuri);
+        
+        return "comun/istoric_referendumuri.jsp";
+    }
+    
+    @RequestMapping(value = "/istoric_referendumuri/detalii_referendum/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String referendumSelectatDetaliat(@PathVariable(value = "id") String strId, Model model) {
+        int id = Integer.valueOf(strId);
+        
+        model.addAttribute("idReferendum", id);
+        
+        return "comun/referendum_detaliat.jsp";
     }
 }
