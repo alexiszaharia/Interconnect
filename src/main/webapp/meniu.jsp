@@ -87,6 +87,12 @@
                         <i class="fas fa-plus-square"></i> &nbsp; Adaugare stire
                     </a>
                 </li>
+                <%} else if (request.getParameter("role").equals("[ROLE_ADMINISTRATOR]")) {%>
+                <li>
+                    <a href="<%=request.getContextPath()%>/pagina_adaugare_user">
+                        <i class="fas fa-plus-square"></i> &nbsp; Adaugare user
+                    </a>
+                </li>
                 <%}%>
             </ul>
         </div>

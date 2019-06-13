@@ -67,4 +67,49 @@ public class UserDao {
         
         return nrUtilizatori;
     }
+    
+    public boolean insertUser(User user) {
+        String sql = "INSERT INTO users (username, password, enabled) "
+                + "VALUES (?, ?, ?)";
+        String sql2 = "INSERT INTO user_roles (userid, role, username) "
+                + "VALUES (?, ?, ?)";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), 
+                    (user.isEnabled()) ? 1 : 0);
+            if (rows == 0) {
+                return false;
+            }
+            
+            int idUserGenerat = getIdUser(user.getUserName());
+            rows = jdbcTemplate.update(sql2, idUserGenerat, user.getRole().getRol(),
+                    user.getUserName());
+            if(rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda insertUser: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
+    
+    public int getIdUser(String username) {
+        String sql = "SELECT id FROM users "
+                + "WHERE username LIKE ?";
+        int id = 0;
+        
+        try {
+            id = jdbcTemplate.queryForObject(sql, Integer.class, username);
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda getIdUser: " + e.getMessage());
+            return 0;
+        }
+        
+        return id;
+    }
 }
