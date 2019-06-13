@@ -5,6 +5,8 @@
  */
 package ro.interconnect.controller;
 
+import java.security.Principal;
+import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ro.interconnect.config.ConfigurareDetalii;
+import ro.interconnect.dao.ReferendumDao;
 import ro.interconnect.dao.StireDao;
+import ro.interconnect.dao.UserDao;
+import ro.interconnect.dao.VoturiReferendumDao;
+import ro.interconnect.db.OptiuneReferendum;
+import ro.interconnect.db.Referendum;
 import ro.interconnect.db.Stire;
+import ro.interconnect.db.User;
 
 /**
  *
@@ -24,9 +32,15 @@ import ro.interconnect.db.Stire;
 @Controller
 public class CetateanController {
     @Autowired
-    ConfigurareDetalii configurareDetalii;
+    private ConfigurareDetalii configurareDetalii;
     @Autowired
-    StireDao stireDao;
+    private StireDao stireDao;
+    @Autowired
+    private ReferendumDao referendumDao;
+    @Autowired
+    private VoturiReferendumDao voturiReferendumDao;
+    @Autowired
+    private UserDao userDao;
     
     @RequestMapping(value = "/news", method = RequestMethod.GET)
     @PreAuthorize("hasRole('CETATEAN')")
@@ -86,5 +100,44 @@ public class CetateanController {
         model.addAttribute("stire", stire);
         
         return "cetatean/detailed_news.jsp";
+    }
+    
+    @RequestMapping(value = "/pagina_vot_referendum", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN')")
+    public String paginaVotareReferendum(Principal principal, Model model) {    
+        Referendum referendum = null;
+        User userCurent = userDao.getUser(principal.getName());
+        boolean referendumActiv = referendumDao.verificareReferendumActiv();
+        boolean oreActive = false;
+        boolean votatDeja = true;
+        
+        if (referendumActiv) {
+            
+            referendum = referendumDao.getReferendumActiv();
+            referendum.setProcentParticipare(voturiReferendumDao.getProcentPrezentaReferendum(
+                    referendum.getIdReferendum()));
+            for (OptiuneReferendum optiuneReferendum: referendum.getListaOptiuni()) {
+                optiuneReferendum.setProcentVot(
+                        voturiReferendumDao.getProcentVotOptiune(
+                                optiuneReferendum.getIdOptiune(), referendum.getIdReferendum()));
+            }
+            
+            Calendar calendar = Calendar.getInstance();
+            int ora = calendar.get(Calendar.HOUR_OF_DAY);
+            if (ora >= 7 && ora < 21) {
+                oreActive = true;
+            } else {
+                oreActive = false;
+            }
+            
+            votatDeja = referendumDao.referendumVotatDeUtilizator(userCurent, referendum);
+        }
+        
+        model.addAttribute("referendumActiv", referendumActiv);
+        model.addAttribute("oreActive", oreActive);
+        model.addAttribute("votatDeja", votatDeja);
+        model.addAttribute("referendum", referendum);
+        
+        return "cetatean/votare_referendum.jsp";
     }
 }

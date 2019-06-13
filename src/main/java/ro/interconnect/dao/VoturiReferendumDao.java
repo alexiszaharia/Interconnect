@@ -8,6 +8,7 @@ package ro.interconnect.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ro.interconnect.db.User;
 import ro.interconnect.enums.RoluriUtilizatori;
 
 /**
@@ -62,5 +63,23 @@ public class VoturiReferendumDao {
         procentPrezenta = totalVoturiReferendum / totalCetateniDouble;
         
         return procentPrezenta*100;
+    }
+    
+    public boolean insertOptiune(User user, int idReferendum, int idOptiune) {
+        String sql = "INSERT INTO optiuni_useri_referendum (id_user, id_referendum, id_optiune) "
+                + "VALUES (?, ?, ?)";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, user.getId(), idReferendum, idOptiune);
+            if (rows == 0) {
+                ok = false;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda insertOptiune: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
     }
 }

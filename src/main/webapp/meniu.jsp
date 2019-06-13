@@ -32,6 +32,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="<%=request.getContextPath()%>/pagina_vot_referendum">
+                        <i class="fas fa-vote-yea"></i> &nbsp; Votare referendum
+                    </a>
+                </li>
+                <li>
                     <a href="<%=request.getContextPath()%>/istoric_referendumuri">
                         <i class="fas fa-poll"></i> &nbsp; Istoric referendumuri
                     </a>

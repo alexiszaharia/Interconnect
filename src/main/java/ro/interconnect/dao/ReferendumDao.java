@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ro.interconnect.db.OptiuneReferendum;
 import ro.interconnect.db.Referendum;
+import ro.interconnect.db.User;
 import ro.interconnect.mapper.MapperReferendum;
 
 /**
@@ -122,5 +123,67 @@ public class ReferendumDao {
         }
         
         return idRef;
+    }
+    
+    public boolean verificareReferendumActiv() {
+        String sql = "SELECT COUNT(*) FROM referendumuri "
+                + "WHERE TRUNC(data_referendum) = TRUNC(SYSDATE)";
+        int nr = 0;
+        boolean exista = false;
+        
+        try {
+            nr = jdbcTemplate.queryForObject(sql, Integer.class);
+            if (nr > 0) {
+                exista = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare verificareReferendumActiv: " + e.getMessage());
+            return false;
+        }
+        
+        return exista;
+    }
+    
+    public Referendum getReferendumActiv() {
+        String sql = "SELECT r.id, r.intrebare, r.data_referendum, u.id, u.username, ur.role "
+                + "FROM referendumuri r "
+                + "JOIN users u ON r.user_creare = u.id "
+                + "JOIN user_roles ur ON u.id = ur.userid "
+                + "WHERE TRUNC(data_referendum) = TRUNC(SYSDATE)";
+        Referendum referendum = null;
+        
+        try {
+            referendum = jdbcTemplate.queryForObject(sql, mapperReferendum);
+            List<OptiuneReferendum> listaOptiuni = optiuneReferendumDao.getOptiuni(
+                    referendum.getIdReferendum());
+            referendum.setListaOptiuni(listaOptiuni);
+        } catch(Exception e) {
+            System.out.println("Eroare getReferendumActiv: " + e.getMessage());
+            return null;
+        }
+        
+        return referendum;
+    }
+    
+    public boolean referendumVotatDeUtilizator(User user, Referendum referendum) {
+        String sql = "SELECT COUNT(*) FROM optiuni_useri_referendum "
+                + "WHERE id_referendum = ? AND id_user = ?";
+        boolean votat = true;
+        int nr = 1;
+        
+        try {
+            nr = jdbcTemplate.queryForObject(sql, Integer.class, 
+                    referendum.getIdReferendum(), user.getId());
+            if (nr == 0) {
+                votat = false;
+            } else {
+                votat = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare referendumVotatDeUtilizator: " + e.getMessage());
+            return true;
+        }
+        
+        return votat;
     }
 }
