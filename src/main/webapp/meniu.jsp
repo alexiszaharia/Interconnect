@@ -53,6 +53,11 @@
                 </li>
                 <%} else if (request.getParameter("role").equals("[ROLE_ADMINISTRATIE_PUBLICA]")) {%>
                 <li>
+                    <a href="<%=request.getContextPath()%>/page_adaugare_referendum">
+                        <i class="far fa-calendar-plus"></i> &nbsp; Adaugare referendum
+                    </a>
+                </li>
+                <li>
                     <a href="<%=request.getContextPath()%>/istoric_referendumuri">
                         <i class="fas fa-poll"></i> &nbsp; Istoric referendumuri
                     </a>

@@ -84,4 +84,43 @@ public class ReferendumDao {
 
         return referendum;
     }
+    
+    public boolean insertReferendum(Referendum referendum) {
+        String sql = "INSERT INTO referendumuri (intrebare, data_referendum, user_creare) "
+                + "VALUES (?, TO_DATE(?, 'dd.MM.yyyy'), ?)";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, 
+                    referendum.getIntrebare(), 
+                    referendum.getDataReferendumFormatata(), 
+                    referendum.getUserCreare().getId());
+            if (rows == 0) {
+                return false;
+            }
+            int idReferendum = getIdReferendum(referendum.getIntrebare());
+            ok = optiuneReferendumDao.insertListaOptiuniReferendum(referendum.getListaOptiuni(), 
+                    idReferendum);
+        } catch(Exception e) {
+            System.out.println("Eroare insertReferendum: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
+    
+    public int getIdReferendum(String intrebare) {
+        String sql = "SELECT id FROM referendumuri "
+                + "WHERE intrebare LIKE ?";
+        int idRef = 0;
+        
+        try {
+            idRef = jdbcTemplate.queryForObject(sql, Integer.class, intrebare);
+        } catch(Exception e) {
+            System.out.println("Eroare getIdReferendum: " + e.getMessage());
+            return 0;
+        }
+        
+        return idRef;
+    }
 }
