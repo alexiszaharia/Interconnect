@@ -56,6 +56,8 @@ public class ReferendumDao {
             listaReferendumuri = jdbcTemplate.query(sql, mapperReferendum);
 
             for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
+                if (i > listaReferendumuri.size() - 1)
+                    break;
                 listaReferendumuriFinal.add(listaReferendumuri.get(i));
             }
         } catch (Exception e) {

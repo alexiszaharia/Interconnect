@@ -39,6 +39,8 @@ public class InitiativaDao {
             listaInitiative = jdbcTemplate.query(sql, mapperInitiativa, roluriUtilizatori.getRol());
 
             for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
+                if (i > listaInitiative.size() - 1)
+                    break;
                 listaInitiativeFinal.add(listaInitiative.get(i));
             }
         } catch (Exception e) {

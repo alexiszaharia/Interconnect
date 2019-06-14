@@ -33,6 +33,8 @@ public class StireDao {
             listaStiri = jdbcTemplate.query(sql, mapperStire);
 
             for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
+                if (i > listaStiri.size() - 1)
+                    break;
                 listaStiriFinal.add(listaStiri.get(i));
             }
         } catch (Exception e) {

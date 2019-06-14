@@ -66,6 +66,8 @@ public class UserDao {
             listaUseri = jdbcTemplate.query(sql, mapperUser);
 
             for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
+                if (i > listaUseri.size() - 1)
+                    break;
                 listaUseriFinal.add(listaUseri.get(i));
             }
         } catch (Exception e) {
