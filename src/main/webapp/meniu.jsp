@@ -92,6 +92,9 @@
                     <a href="<%=request.getContextPath()%>/pagina_adaugare_user">
                         <i class="fas fa-plus-square"></i> &nbsp; Adaugare user
                     </a>
+                    <a href="<%=request.getContextPath()%>/pagina_listare_useri">
+                        <i class="fas fa-table"></i> &nbsp; Listare utilizatori
+                    </a>
                 </li>
                 <%}%>
             </ul>

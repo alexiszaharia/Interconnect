@@ -5,6 +5,8 @@
  */
 package ro.interconnect.dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -53,6 +55,27 @@ public class UserDao {
         return user;
     }
     
+    public List<User> getListaUseriPePagina(int nrStart, int nrFinal) {
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role "
+                + "FROM users u JOIN user_roles r ON u.id = r.userid "
+                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA' "
+                + "ORDER BY u.username ASC";
+        List<User> listaUseri = new ArrayList<User>();
+        List<User> listaUseriFinal = new ArrayList<User>();
+        try {
+            listaUseri = jdbcTemplate.query(sql, mapperUser);
+
+            for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
+                listaUseriFinal.add(listaUseri.get(i));
+            }
+        } catch (Exception e) {
+            System.out.println("Eroare getListaUseriPePagina: " + e.getMessage());
+            return new ArrayList<User>();
+        }
+
+        return listaUseriFinal;
+    }
+    
     public int getNrUseri(RoluriUtilizatori roluriUtilizatori) {
         String sql = "SELECT COUNT(*) FROM user_roles "
                 + "WHERE role LIKE ?";
@@ -62,6 +85,21 @@ public class UserDao {
             nrUtilizatori = jdbcTemplate.queryForObject(sql, Integer.class, roluriUtilizatori.getRol());
         } catch(Exception e) {
             System.out.println("Eroare la metoda getNrUseri(rol): " + e.getMessage());
+            return 0;
+        }
+        
+        return nrUtilizatori;
+    }
+    
+    public int getNrCetateniAdministratie() {
+        String sql = "SELECT COUNT(*) FROM user_roles "
+                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA'";
+        int nrUtilizatori = 0;
+        
+        try {
+            nrUtilizatori = jdbcTemplate.queryForObject(sql, Integer.class);
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda getNrCetateniAdministratie: " + e.getMessage());
             return 0;
         }
         
@@ -111,5 +149,86 @@ public class UserDao {
         }
         
         return id;
+    }
+    
+    public boolean activareDezactivareUser(int enabled, int idUser) {
+        String sql = "UPDATE users "
+                + "SET enabled = ? "
+                + "WHERE id = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, enabled, idUser);
+            if (rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda activareDezactivareUser: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
+    
+    public boolean updateUserCuParola (User user) {
+        String sql = "UPDATE users "
+                + "SET username = ?, password = ? "
+                + "WHERE id = ?";
+        String sql2 = "UPDATE user_roles "
+                + "SET username = ?, role = ? "
+                + "WHERE userid = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getId());
+            if (rows == 0) {
+                return false;
+            }
+            
+            rows = jdbcTemplate.update(sql2, user.getUserName(), user.getRole().getRol(), 
+                    user.getId());
+            if (rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda updateUserCuParola: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
+    
+    public boolean updateUserFaraParola (User user) {
+        String sql = "UPDATE users "
+                + "SET username = ? "
+                + "WHERE id = ?";
+        String sql2 = "UPDATE user_roles "
+                + "SET username = ?, role = ? "
+                + "WHERE userid = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getId());
+            if (rows == 0) {
+                return false;
+            }
+            
+            rows = jdbcTemplate.update(sql2, user.getUserName(), user.getRole().getRol(), 
+                    user.getId());
+            if (rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda updateUserCuParola: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
     }
 }

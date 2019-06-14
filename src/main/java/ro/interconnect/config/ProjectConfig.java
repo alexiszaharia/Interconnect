@@ -44,7 +44,7 @@ public class ProjectConfig {
     @Bean
     public ConfigurareDetalii configurareDetalii() {
         ConfigurareDetalii configurareDetalii = new ConfigurareDetalii();
-        configurareDetalii.setNrElemPePagina(1);
+        configurareDetalii.setNrElemPePagina(10);
         
         return configurareDetalii;
     }
