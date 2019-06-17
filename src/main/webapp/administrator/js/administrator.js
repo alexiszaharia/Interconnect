@@ -197,6 +197,11 @@ function deleteUser(id) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
     
+    var confirmare = confirm("Sigur doriti stergerea userului?");
+    if (confirmare == false) {
+        return;
+    }
+    
     var datePost = '&id=' + id;
 
     $.ajax({
