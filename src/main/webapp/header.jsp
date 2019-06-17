@@ -13,7 +13,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a href="#" title="Vizualizare detalii si schimbare parola">
+                <a href="<%=request.getContextPath()%>/modificare_parola" title="Schimbare parola">
                     <i class="fas fa-user"></i> &nbsp; ${pageContext.request.userPrincipal.name}
                 </a>
             </li>

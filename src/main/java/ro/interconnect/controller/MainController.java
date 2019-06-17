@@ -34,4 +34,9 @@ public class MainController {
     public String header() {
         return "header.jsp";
     }
+    
+    @RequestMapping(value = "/modificare_parola", method = RequestMethod.GET)
+    public String modificareParola(){
+        return "modificare_parola.jsp";
+    }
 }

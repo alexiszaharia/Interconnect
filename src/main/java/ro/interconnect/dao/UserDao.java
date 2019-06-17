@@ -233,4 +233,23 @@ public class UserDao {
         
         return ok;
     }
+    
+    public boolean updatePasswordUser (User user, String nouaParola) {
+        String sql = "UPDATE users "
+                + "SET password = ? "
+                + "WHERE id = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, nouaParola, user.getId());
+            if (rows == 0) {
+                ok = false;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda updatePasswordUser: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
 }
