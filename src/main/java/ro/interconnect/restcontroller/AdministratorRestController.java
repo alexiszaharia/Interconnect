@@ -78,7 +78,7 @@ public class AdministratorRestController {
             raspuns.setCodRetur(0);
         } else {
             raspuns.setCodRetur(-1);
-            raspuns.setMesajConsola("Eroare la adaugarea referendumului!");
+            raspuns.setMesajConsola("Eroare la activarea/dezactivarea userului!");
         }
         
         return raspuns;
@@ -124,6 +124,24 @@ public class AdministratorRestController {
         } else {
             raspuns.setCodRetur(-1);
             raspuns.setMesajConsola("Eroare la modificarea userului!");
+        }
+        
+        return raspuns;
+    }
+    
+    @RequestMapping(value = "/stergere_user", method = RequestMethod.POST, 
+            produces = "application/json; charset=UTF-8")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public RestResponse<Object> stergereUser(@RequestParam(value = "id") int idUser) {
+        RestResponse<Object> raspuns = new RestResponse<>();
+                
+        boolean ok = userDao.deleteUser(idUser);
+        
+        if (ok) {
+            raspuns.setCodRetur(0);
+        } else {
+            raspuns.setCodRetur(-1);
+            raspuns.setMesajConsola("Eroare la stergerea userului!");
         }
         
         return raspuns;

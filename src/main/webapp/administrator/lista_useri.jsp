@@ -49,18 +49,27 @@
                                     <th>
                                         Modificare
                                     </th>
+                                    <th>
+                                        Stergere
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${listaUseri}" var="item">
-                                    <tr specific="${item.getRole().getRol()}">
+                                    <tr id="row${item.getId()}" specific="${item.getRole().getRol()}">
                                         <td>${item.getUserName()}</td>
                                         <td>${item.getRole().getRol()}</td>
                                         <td specific="${item.getId()}" functie="${(item.isEnabled()) ? 1 : 0}"></td>
                                         <td>
-                                            <a href="<%=request.getContextPath()%>/modificare_user/${item.getId()}">
+                                            <a href="<%=request.getContextPath()%>/modificare_user/${item.getId()}" 
+                                               title="Modificare utilizator">
                                                 <i class="fas fa-edit" style="font-size: 18px;"></i>
                                             </a>
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-trash-alt" style="font-size: 18px; color: red; cursor: pointer;"
+                                               onclick="deleteUser(${item.getId()})" 
+                                               title="Stergere cont"></i>
                                         </td>
                                     </tr>
                                 </c:forEach>

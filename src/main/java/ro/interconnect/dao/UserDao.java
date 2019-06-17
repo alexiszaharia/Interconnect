@@ -252,4 +252,31 @@ public class UserDao {
         
         return ok;
     }
+    
+    public boolean deleteUser(int idUser) {
+        String sql = "DELETE FROM user_roles "
+                + "WHERE userid = ?";
+        String sql2 = "DELETE FROM users "
+                + "WHERE id = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, idUser);
+            if (rows == 0) {
+                return false;
+            }
+            
+            rows = jdbcTemplate.update(sql2, idUser);
+            if(rows == 0) {
+                ok = false;
+            } else {
+                ok = true;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda deleteUser: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
 }

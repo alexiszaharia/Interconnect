@@ -192,3 +192,31 @@ function modificareUtilizator(idUser) {
         }
     });
 }
+
+function deleteUser(id) {
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    
+    var datePost = '&id=' + id;
+
+    $.ajax({
+        type: 'POST',
+        url: root + "/stergere_user",
+        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        dataType: 'json',
+        data: datePost,
+        success: function (data, textStatus, jqXHR) {
+            if (data.codRetur == 0) {
+                $('#row' + id).css('display', 'none');
+            } else {
+                console.log("Eroare la stergerea userului: " + data.mesajConsola);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Eroare la stergerea userului");
+        }
+    });
+}
