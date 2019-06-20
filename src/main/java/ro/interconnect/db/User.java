@@ -5,6 +5,7 @@
  */
 package ro.interconnect.db;
 
+import java.sql.Timestamp;
 import ro.interconnect.enums.RoluriUtilizatori;
 
 /**
@@ -17,6 +18,7 @@ public class User {
     private String password;
     private boolean enabled;
     private RoluriUtilizatori role;
+    private Timestamp ultimaNotificare;
 
     public User() {
     }
@@ -68,6 +70,12 @@ public class User {
     public void setRole(RoluriUtilizatori role) {
         this.role = role;
     }
-    
-    
+
+    public Timestamp getUltimaNotificare() {
+        return ultimaNotificare;
+    }
+
+    public void setUltimaNotificare(Timestamp ultimaNotificare) {
+        this.ultimaNotificare = ultimaNotificare;
+    }
 }

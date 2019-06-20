@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/bootstrap/bootstrap.min.css"/>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/font_awesome/css/all.css"/>
     <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/general.css"/>
-    <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>
     <script src="<%=request.getContextPath()%>/resources/js/jquery/jquery-3.4.1.min.js"></script>
+    <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>    
 </head>
 
 <nav class="navbar navbar-default">

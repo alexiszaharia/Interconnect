@@ -26,7 +26,7 @@ public class UserDao {
     private MapperUser mapperUser;
     
     public User getUser(int id) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role "
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
                 + "WHERE u.id = ?";
         User user = null;
@@ -41,7 +41,7 @@ public class UserDao {
     }
     
     public User getUser(String username) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role "
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
                 + "WHERE u.username LIKE ?";
         User user = null;
@@ -56,7 +56,7 @@ public class UserDao {
     }
     
     public List<User> getListaUseriPePagina(int nrStart, int nrFinal) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role "
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
                 + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA' "
                 + "ORDER BY u.username ASC";
@@ -247,6 +247,25 @@ public class UserDao {
             }
         } catch(Exception e) {
             System.out.println("Eroare la metoda updatePasswordUser: " + e.getMessage());
+            return false;
+        }
+        
+        return ok;
+    }
+    
+    public boolean updateUltimaNotificare (User user) {
+        String sql = "UPDATE users "
+                + "SET data_ultima_notificare = CURRENT_TIMESTAMP "
+                + "WHERE id = ?";
+        boolean ok = true;
+        
+        try {
+            int rows = jdbcTemplate.update(sql, user.getId());
+            if (rows == 0) {
+                ok = false;
+            }
+        } catch(Exception e) {
+            System.out.println("Eroare la metoda updateUltimaNotificare: " + e.getMessage());
             return false;
         }
         

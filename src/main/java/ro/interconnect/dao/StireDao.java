@@ -44,6 +44,19 @@ public class StireDao {
 
         return listaStiriFinal;
     }
+    
+    public List<Stire> getListaAnunturi() {
+        String sql = "SELECT * FROM stiri WHERE anunt = 1 ORDER BY data_publicare DESC";
+        List<Stire> listaStiri = new ArrayList<Stire>();
+        try {
+            listaStiri = jdbcTemplate.query(sql, mapperStire);
+        } catch (Exception e) {
+            System.out.println("Eroare getListaAnunturi: " + e.getMessage());
+            return new ArrayList<Stire>();
+        }
+
+        return listaStiri;
+    }
 
     public Stire getStire(int id) {
         String sql = "SELECT * FROM stiri WHERE id = ?";
@@ -74,13 +87,14 @@ public class StireDao {
     
     public boolean insertStire(Stire stire) {
         String sql = "INSERT INTO stiri (continut_stire, data_publicare, user_publicare, tip_stire, "
-                + "preview, titlu_stire) "
-                + "VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?)";
+                + "preview, titlu_stire, anunt) "
+                + "VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
         boolean ok = true;
         
         try {
             int rows = jdbcTemplate.update(sql, stire.getContinutStire(), stire.getUserPublicare(), 
-                    stire.getTipStire(), stire.getPreviewStire(), stire.getTitluStire());
+                    stire.getTipStire(), stire.getPreviewStire(), stire.getTitluStire(), 
+                    stire.getAnunt());
             if (rows == 0) {
                 ok = false;
             } else {

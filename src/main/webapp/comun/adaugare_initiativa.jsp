@@ -18,12 +18,14 @@
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/font_awesome/css/all.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/general.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/comun/css/comun.css"/>
-        <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/resources/js/jquery/jquery-3.4.1.min.js"></script>
+        <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>        
         <script src="<%=request.getContextPath()%>/comun/js/comun.js"></script>
     </head>
     <body>
-        <jsp:include page="/header"/>
+        <jsp:include page="/header">
+            <jsp:param name="role" value="${pageContext.request.userPrincipal.authorities}"/>
+        </jsp:include>
         <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
             <div class="row">
                 <div class="col-sm-2">

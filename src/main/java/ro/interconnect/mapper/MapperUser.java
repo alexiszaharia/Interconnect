@@ -37,6 +37,7 @@ public class MapperUser implements RowMapper<User>{
                 user.setRole(RoluriUtilizatori.CETATEAN);
                 break;
         }      
+        user.setUltimaNotificare(rs.getTimestamp(6));
         
         return user;
     }

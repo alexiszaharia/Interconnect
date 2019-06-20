@@ -28,6 +28,7 @@ public class MapperStire implements RowMapper<Stire> {
         stire.setTipStire(rs.getString(5));
         stire.setPreviewStire(rs.getString(6));
         stire.setTitluStire(rs.getString(7));
+        stire.setAnunt(rs.getInt(8));
         stire.setDataPublicareFormatata();
         return stire;
     }

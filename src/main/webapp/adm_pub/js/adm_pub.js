@@ -105,6 +105,7 @@ function adaugareStire(numeUser) {
     var previewStire = $('#preview_stire').val();
     var tipStire = $('#tip_stire option:selected').val();
     var continutStire = $('#continut_stire').val();
+    var anuntStire;
 
     $('#alerta_adaugare_stire').removeClass('alert-success');
     $('#alerta_adaugare_stire').removeClass('alert-danger');
@@ -137,10 +138,16 @@ function adaugareStire(numeUser) {
         $('#alerta_adaugare_stire').html('Continutul stirii nu poate fi gol!');
         return;
     }
+    
+    if ($('#checkbox_anunt').is(':checked')) {
+        anuntStire = 1;
+    } else {
+        anuntStire = 0;
+    }
 
     var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
             + '&tipStire=' + tipStire + '&continutStire=' + continutStire
-            + '&numeUser=' + numeUser;
+            + '&numeUser=' + numeUser + '&anuntStire=' + anuntStire;
 
     $.ajax({
         type: 'POST',

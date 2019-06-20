@@ -21,8 +21,8 @@
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/font_awesome/css/all.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/resources/css/general.css"/>
         <link rel="stylesheet" href="<%=request.getContextPath()%>/adm_pub/css/adm_pub.css"/>
-        <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>
         <script src="<%=request.getContextPath()%>/resources/js/jquery/jquery-3.4.1.min.js"></script>
+        <script src="<%=request.getContextPath()%>/resources/js/bootstrap/bootstrap.min.js"></script>        
         <script src="<%=request.getContextPath()%>/adm_pub/js/adm_pub.js"></script>
     </head>
     <body>
@@ -32,7 +32,9 @@
             calendar.add(Calendar.DAY_OF_YEAR, 1);
             String dataMin = sdf.format(calendar.getTime());
         %>
-        <jsp:include page="/header"/>
+        <jsp:include page="/header">
+            <jsp:param name="role" value="${pageContext.request.userPrincipal.authorities}"/>
+        </jsp:include>
         <div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
             <div class="row">
                 <div class="col-sm-2">

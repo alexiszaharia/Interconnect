@@ -22,12 +22,13 @@ public class Stire {
     private String titluStire;
     private String dataPublicareFormatata;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private int anunt;
 
     public Stire() {
     }
 
     public Stire(int id, String continutStire, Timestamp dataPublicare, int userPublicare, 
-            String tipStire, String previewStire, String titluStire) {
+            String tipStire, String previewStire, String titluStire, int anunt) {
         this.id = id;
         this.continutStire = continutStire;
         this.dataPublicare = dataPublicare;
@@ -36,10 +37,11 @@ public class Stire {
         this.previewStire = previewStire;
         this.titluStire = titluStire;
         this.dataPublicareFormatata = sdf.format(dataPublicare);
+        this.anunt = anunt;
     }
 
     public Stire(String continutStire, Timestamp dataPublicare, int userPublicare, 
-            String tipStire, String previewStire, String titluStire) {
+            String tipStire, String previewStire, String titluStire, int anunt) {
         this.continutStire = continutStire;
         this.dataPublicare = dataPublicare;
         this.userPublicare = userPublicare;
@@ -47,6 +49,7 @@ public class Stire {
         this.previewStire = previewStire;
         this.titluStire = titluStire;
         this.dataPublicareFormatata = sdf.format(dataPublicare);
+        this.anunt = anunt;
     }
 
     public int getId() {
@@ -117,5 +120,13 @@ public class Stire {
         if (this.dataPublicare != null) {
             this.dataPublicareFormatata = sdf.format(this.dataPublicare);
         }
+    }
+
+    public int getAnunt() {
+        return anunt;
+    }
+
+    public void setAnunt(int anunt) {
+        this.anunt = anunt;
     }
 }
