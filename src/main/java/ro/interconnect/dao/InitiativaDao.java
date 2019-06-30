@@ -69,6 +69,22 @@ public class InitiativaDao {
 
         return initiativa;
     }
+    
+    public int getIdInitiativa(String titlu, String continut) {
+        String sql = "SELECT id "
+                + "FROM initiative "
+                + "WHERE titlu_initiativa LIKE ? AND text_initiativa LIKE ?";
+        int id = 0;
+        
+        try {
+            id = jdbcTemplate.queryForObject(sql, Integer.class, titlu, continut);
+        } catch (Exception e) {
+            System.out.println("Eroare getIdInitiativa: " + e.getMessage());
+            return 0;
+        }
+        
+        return id;
+    }
 
     public int getNumarInitiative(RoluriUtilizatori roluriUtilizatori) {
         String sql = "SELECT COUNT(*) FROM initiative i "

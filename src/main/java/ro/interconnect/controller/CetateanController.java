@@ -117,7 +117,7 @@ public class CetateanController {
         if (director.exists()) {
             for (File fisier : director.listFiles()) {
                 Atasament atasament = new Atasament();
-                atasament.setCale("/news_atachment/" + stire.getId() + "/" + fisier.getName());
+                atasament.setCale("/news_attachment/" + stire.getId() + "/" + fisier.getName());
                 atasament.setDenumire(fisier.getName());
                 listaAtasamente.add(atasament);
             }
@@ -186,14 +186,13 @@ public class CetateanController {
 //            return null;
 //        }
 //    }
-    @GetMapping(value = "/news_atachment/{id}/{denumire}.{extensie}")
+    @GetMapping(value = "/news_attachment/{id}/{denumire}.{extensie}")
     @PreAuthorize("hasRole('CETATEAN')")
     public ResponseEntity<InputStreamResource> getAttachmentNews(@PathVariable(value = "id") String strId,
             @PathVariable(value = "denumire") String denumire, 
             @PathVariable(value = "extensie") String extensie) throws IOException {
         String caleFisier = configurareDetalii.getCaleFisiere() + "\\news\\" + strId + "\\" 
                 + denumire + "." + extensie;
-        System.out.println("cale fisier: " + caleFisier);
         File file = new File(caleFisier);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
         

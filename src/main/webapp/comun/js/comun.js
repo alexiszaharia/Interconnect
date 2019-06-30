@@ -137,7 +137,7 @@ function selectareLikeDislike(numeUser, idInitiativa, like) {
     });
 }
 
-function adaugareInitiativa(numeUser) {
+function adaugareInitiativa(data) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
@@ -162,18 +162,19 @@ function adaugareInitiativa(numeUser) {
         return;
     }
 
-    var datePost = '&nume_user=' + numeUser + '&titlu=' + titlu
-            + '&continut=' + continut;
+//    var datePost = '&nume_user=' + numeUser + '&titlu=' + titlu
+//            + '&continut=' + continut;
 
     $.ajax({
         type: 'POST',
         url: root + "/adaugare_initiativa",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        contentType: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         dataType: 'json',
-        data: datePost,
+        data: data, 
+        processData: false, 
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 $('#titlu_initiativa').val('');

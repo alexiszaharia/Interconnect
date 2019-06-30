@@ -5,15 +5,25 @@
  */
 package ro.interconnect.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import ro.interconnect.beans.Atasament;
 import ro.interconnect.config.ConfigurareDetalii;
 import ro.interconnect.dao.InitiativaDao;
 import ro.interconnect.dao.OpinieDao;
@@ -174,6 +184,19 @@ public class ComunController {
         List<Opinie> listaOpinii = opinieDao.getOpiniiInitiativa(initiativa.getId());
         initiativa.setListaOpinii(listaOpinii);
         
+        List<Atasament> listaAtasamente = new ArrayList<>();
+        String caleDirector = configurareDetalii.getCaleFisiere() + "\\initiative\\" + initiativa.getId();
+        File director = new File(caleDirector);
+        if (director.exists()) {
+            for (File fisier : director.listFiles()) {
+                Atasament atasament = new Atasament();
+                atasament.setCale("/initiativa_attachment/" + initiativa.getId() + "/" + fisier.getName());
+                atasament.setDenumire(fisier.getName());
+                listaAtasamente.add(atasament);
+            }
+            initiativa.setListaAtasamente(listaAtasamente);
+        }
+        
         User user = userDao.getUser(principal.getName());
         
         model.addAttribute("initiativa", initiativa);
@@ -254,5 +277,21 @@ public class ComunController {
         model.addAttribute("idReferendum", id);
         
         return "comun/referendum_detaliat.jsp";
+    }
+    
+    @GetMapping(value = "/initiativa_attachment/{id}/{denumire}.{extensie}")
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public ResponseEntity<InputStreamResource> getAttachmentNews(@PathVariable(value = "id") String strId,
+            @PathVariable(value = "denumire") String denumire, 
+            @PathVariable(value = "extensie") String extensie) throws IOException {
+        String caleFisier = configurareDetalii.getCaleFisiere() + "\\initiative\\" + strId + "\\" 
+                + denumire + "." + extensie;
+        File file = new File(caleFisier);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+        
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).contentLength(file.length())
+                .body(resource);
     }
 }
