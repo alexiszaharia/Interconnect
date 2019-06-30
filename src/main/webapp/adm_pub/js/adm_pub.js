@@ -97,7 +97,7 @@ function getOptiuni() {
     }
 }
 
-function adaugareStire(numeUser) {
+function adaugareStire(data) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
@@ -145,19 +145,20 @@ function adaugareStire(numeUser) {
         anuntStire = 0;
     }
 
-    var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
-            + '&tipStire=' + tipStire + '&continutStire=' + continutStire
-            + '&numeUser=' + numeUser + '&anuntStire=' + anuntStire;
+//    var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
+//            + '&tipStire=' + tipStire + '&continutStire=' + continutStire
+//            + '&numeUser=' + numeUser + '&anuntStire=' + anuntStire;
 
     $.ajax({
         type: 'POST',
         url: root + "/adaugare_stire",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        contentType: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         dataType: 'json',
-        data: datePost,
+        data: data,
+        processData: false, 
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 $('#titlu_stire').val('');

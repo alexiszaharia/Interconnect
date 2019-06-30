@@ -71,6 +71,20 @@ public class StireDao {
 
         return stire;
     }
+    
+    public int getIdStire(String titluStire, String previewStire) {
+        String sql = "SELECT id FROM stiri WHERE titlu_stire LIKE ? AND preview LIKE ?";
+        int id = 0;
+
+        try {
+            id = jdbcTemplate.queryForObject(sql, Integer.class, titluStire, previewStire);
+        } catch (Exception e) {
+            System.out.println("Eroare getIdStire: " + e.getMessage());
+            return 0;
+        }
+
+        return id;
+    }
 
     public int getNumarStiri() {
         String sql = "SELECT COUNT(*) FROM stiri";
