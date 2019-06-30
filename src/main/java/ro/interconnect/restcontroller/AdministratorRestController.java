@@ -34,7 +34,14 @@ public class AdministratorRestController {
     public RestResponse<Object> adaugareUser(@RequestParam(value = "numeUtilizator") String numeUtilizator, 
             @RequestParam(value = "parola") String parola, 
             @RequestParam(value = "enabled") int enabled, 
-            @RequestParam(value = "tipUser") String tipUser) {
+            @RequestParam(value = "tipUser") String tipUser, 
+            @RequestParam(value = "numePersoana") String numePersoana, 
+            @RequestParam(value = "prenumePersoana") String prenumePersoana, 
+            @RequestParam(value = "varstaPersoana") int varstaPersoana, 
+            @RequestParam(value = "judet") String judet, 
+            @RequestParam(value = "localitate") String localitate, 
+            @RequestParam(value = "adresa") String adresa, 
+            @RequestParam(value = "sex") String sex) {
         RestResponse<Object> raspuns = new RestResponse<>();
                 
         User user = new User();
@@ -52,6 +59,13 @@ public class AdministratorRestController {
                 user.setRole(RoluriUtilizatori.ADMINISTRATOR);
                 break;
         }   
+        user.setNumePersoana(numePersoana);
+        user.setPrenumePersoana(prenumePersoana);
+        user.setVarsta(varstaPersoana);
+        user.setJudet(judet);
+        user.setLocalitate(localitate);
+        user.setAdresa(adresa);
+        user.setSex(sex);
         
         boolean ok = userDao.insertUser(user);
         
@@ -90,7 +104,14 @@ public class AdministratorRestController {
     public RestResponse<Object> modificareUser(@RequestParam(value = "numeUtilizator") String numeUtilizator, 
             @RequestParam(value = "parola") String parola, 
             @RequestParam(value = "tipUser") String tipUser, 
-            @RequestParam(value = "idUser") int idUser) {
+            @RequestParam(value = "idUser") int idUser, 
+            @RequestParam(value = "numePersoana") String numePersoana, 
+            @RequestParam(value = "prenumePersoana") String prenumePersoana, 
+            @RequestParam(value = "varstaPersoana") int varstaPersoana, 
+            @RequestParam(value = "judet") String judet, 
+            @RequestParam(value = "localitate") String localitate, 
+            @RequestParam(value = "adresa") String adresa, 
+            @RequestParam(value = "sex") String sex) {
         RestResponse<Object> raspuns = new RestResponse<>();
                 
         User user = new User();
@@ -110,6 +131,13 @@ public class AdministratorRestController {
                 user.setRole(RoluriUtilizatori.ADMINISTRATOR);
                 break;
         }   
+        user.setNumePersoana(numePersoana);
+        user.setPrenumePersoana(prenumePersoana);
+        user.setVarsta(varstaPersoana);
+        user.setJudet(judet);
+        user.setLocalitate(localitate);
+        user.setAdresa(adresa);
+        user.setSex(sex);
         
         boolean ok = true;
         

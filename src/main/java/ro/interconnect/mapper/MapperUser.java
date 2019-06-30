@@ -38,6 +38,13 @@ public class MapperUser implements RowMapper<User>{
                 break;
         }      
         user.setUltimaNotificare(rs.getTimestamp(6));
+        user.setNumePersoana(rs.getString(7));
+        user.setPrenumePersoana(rs.getString(8));
+        user.setVarsta(rs.getInt(9));
+        user.setJudet(rs.getString(10));
+        user.setLocalitate(rs.getString(11));
+        user.setAdresa(rs.getString(12));
+        user.setSex(rs.getString(13));
         
         return user;
     }
