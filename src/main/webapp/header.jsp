@@ -25,7 +25,7 @@
             <%if (request.getParameter("role").equals("[ROLE_CETATEAN]")) {%>
             <li>
                 <a id="notificare_popover" href="#" data-toggle="popover" 
-                   data-placement="bottom" data-trigger="focus" 
+                   data-placement="bottom" 
                    onclick="actualizareNotificariUser('${pageContext.request.userPrincipal.name}')">
                     <i class="fas fa-bell" style="font-size: 18px;"></i>
                     <span id="nr_notificari" class="badge" style="background-color: red; display: none;">0</span>
@@ -44,37 +44,36 @@
 
 <script>
     var root = '<%=request.getContextPath()%>';
-    var notificari;
+//    var notificari;
     var user = '${pageContext.request.userPrincipal.name}';
 
     $(document).ready(function () {
         getNotificari(user);
-        console.log(notificari.notificariNoi);
-        
-        if (notificari.notificariNoi == 0) {
-            $('#nr_notificari').text('0');
-            $('#nr_notificari').css('display', 'none');
-        } else {
-            $('#nr_notificari').text(notificari.notificariNoi);
-            $('#nr_notificari').css('display', '');
-        }
 
-        var htmlPopover = '';
-        $.each(notificari.listaNotificari, function (index, elem) {
-            htmlPopover += '<a href="<%=request.getContextPath()%>/news/detalii_news/' + elem.id + '" title="Vizualizare anunt">';
-            htmlPopover += '<div>' + elem.titluStire + '</div>';
-            htmlPopover += '</a>'
-        });
-
-        $('#notificare_popover').popover({content: htmlPopover, html: true,
-            placement: "bottom", trigger: "focus"});
+//        if (notificari.notificariNoi == 0) {
+//            $('#nr_notificari').text('0');
+//            $('#nr_notificari').css('display', 'none');
+//        } else {
+//            $('#nr_notificari').text(notificari.notificariNoi);
+//            $('#nr_notificari').css('display', '');
+//        }
+//
+//        var htmlPopover = '';
+//        $.each(notificari.listaNotificari, function (index, elem) {
+//            htmlPopover += '<a href="<%=request.getContextPath()%>/news/detalii_news/' + elem.id + '" title="Vizualizare anunt">';
+//            htmlPopover += '<div>' + elem.titluStire + '</div>';
+//            htmlPopover += '</a>'
+//        });
+//
+//        $('#notificare_popover').popover({content: htmlPopover, html: true,
+//            placement: "bottom", trigger: "focus"});
     });
 
     function getNotificari(user) {
         var csrfHeader = $("meta[name='_csrf_header']").attr("content");
         var csrfToken = $("meta[name='_csrf']").attr("content");
 
-        notificari = new Object();
+        var notificari;
 
         var datePost = '&numeUtilizator=' + user;
 
@@ -89,7 +88,26 @@
             data: datePost,
             success: function (data, textStatus, jqXHR) {
                 if (data.codRetur == 0) {
-                    notificari = Object.assign(notificari, data.objectResponse);
+                    notificari = data.objectResponse;
+
+                    if (notificari.notificariNoi == 0) {
+                        $('#nr_notificari').text('0');
+                        $('#nr_notificari').css('display', 'none');
+                    } else {
+                        $('#nr_notificari').text(notificari.notificariNoi);
+                        $('#nr_notificari').css('display', '');
+                    }
+
+                    var htmlPopover = '';
+                    $.each(notificari.listaNotificari, function (index, elem) {
+                        htmlPopover += '<a href="<%=request.getContextPath()%>/news/detalii_news/' + elem.id + '" title="Vizualizare anunt">';
+                        htmlPopover += '<div style="width: 200px;">' + elem.titluStire + '</div>';
+                        htmlPopover += '</a><br/>'
+                    });
+
+                    $('#notificare_popover').popover({content: htmlPopover, html: true,
+                        placement: "bottom"/*, trigger: "focus"*/});
+                    
                 } else {
                     console.log("Eroare la obtinerea notificarilor " + data.mesajConsola);
                 }
