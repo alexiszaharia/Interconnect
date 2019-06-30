@@ -41,6 +41,18 @@
                     <div id="alerta_adaugare_utilizator" class="alert" 
                          style="display: none; width: 90%;">
                     </div>
+                    <form id="form_import_csv" method="POST" 
+                          enctype="multipart/form-data">
+                        <div class="form-group" style="width: 90%;">
+                            <label for="files_csv">Atasamente:</label>
+                            <input type="file" id="files_csv" name="files_csv" multiple="multiple"/>
+                        </div>
+                        <button id="btnImport" class="btn btn-success">
+                            <i class="fas fa-upload"></i>
+                            Import csv utilizatori
+                        </button>
+                    </form>
+                    <hr/>
                     <div class="form-group" style="width: 90%;">
                         <label for="nume_user">Nume user:</label>
                         <input type="text" class="form-control" id="nume_user"/>
@@ -95,6 +107,17 @@
 
         <script>
             var root = '<%=request.getContextPath()%>';
+            
+            $(document).ready(function () {
+                $('#btnImport').click(function (event) {    
+                    event.preventDefault();
+                    
+                    var form = $('#form_import_csv')[0];
+                    var data = new FormData(form);
+                    
+                    importUtilizatori(data);
+                });
+            });
         </script>
     </body>
 </html>

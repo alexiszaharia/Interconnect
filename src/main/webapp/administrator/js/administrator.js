@@ -352,3 +352,53 @@ function deleteUser(id) {
         }
     });
 }
+
+function importUtilizatori(data) {
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+
+    var fisiereImport = $('#files_csv').val();
+
+    $('#alerta_adaugare_utilizator').removeClass('alert-success');
+    $('#alerta_adaugare_utilizator').removeClass('alert-danger');
+    $('#alerta_adaugare_utilizator').empty();
+
+    if (fisiereImport == undefined || fisiereImport == '') {
+        $('#alerta_adaugare_utilizator').css('display', '');
+        $('#alerta_adaugare_utilizator').addClass('alert-danger');
+        $('#alerta_adaugare_utilizator').html('Trebuie adaugat macar un fisier pentru import!');
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: root + "/import_utilizatori",
+        contentType: false,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        dataType: 'json',
+        data: data,
+        processData: false, 
+        success: function (data, textStatus, jqXHR) {
+            if (data.codRetur == 0) {
+                $('#alerta_adaugare_utilizator').css('display', '');
+                $('#alerta_adaugare_utilizator').addClass('alert-success');
+                $('#alerta_adaugare_utilizator').html('S-a facut importul de utilizatori!');
+            } else {
+                console.log("Eroare la adaugarea utilizatorilor: " + data.mesajConsola);
+
+                $('#alerta_adaugare_utilizator').css('display', '');
+                $('#alerta_adaugare_utilizator').addClass('alert-danger');
+                $('#alerta_adaugare_utilizator').html('Nu s-au adaugat utilizatorii! EROARE SERVER');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Eroare la adaugarea utilizatorilor");
+
+            $('#alerta_adaugare_utilizator').css('display', '');
+            $('#alerta_adaugare_utilizator').addClass('alert-danger');
+            $('#alerta_adaugare_utilizator').html('Nu s-au adaugat utilizatorii! EROARE SERVER');
+        }
+    });
+}
