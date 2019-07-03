@@ -47,15 +47,44 @@
                                     <div id="alerta_votare_referendum" class="alert alert-danger" 
                                          style="display: none; width: 90%;">
                                     </div>
-                                    <div class="form-group" style="width: 90%;">
-                                        <p style="font-size: 14px;">${referendum.getIntrebare()}</p>
-                                        <c:forEach items="${referendum.getListaOptiuni()}" var="item">
-                                            <div class="radio">
-                                                <label>
-                                                    <input type="radio" name="optiune_referendum" value="${item.getIdOptiune()}"/>
-                                                    ${item.getTextOptiune()}
-                                                </label>
+                                    <div id="div_prezentare_referendum">
+                                        <p style="font-size: 16px; font-weight: bold;">
+                                            Prezentare referendum
+                                        </p>
+                                        <c:if test="${referendum.getListaAtasamente().size() > 0}">
+                                            <p style="font-weight: bold">Lista de atasamente:</p>
+                                            <c:forEach items="${referendum.getListaAtasamente()}" var="item">
+                                                <a href="<%=request.getContextPath()%>${item.getCale()}" target="_blank">${item.getDenumire()}</a>
+                                                <br/>
+                                            </c:forEach>
+                                            <br/>
+                                        </c:if>
+                                        <p>
+                                            ${referendum.getPrezentare()}
+                                        </p>
+                                        <br/>
+                                        <button id="btnInchiderePrezentare" class="btn btn-primary">
+                                            Afisare intrebari
+                                        </button>
+                                    </div>
+                                    <div id="div_intrebari_referendum" class="form-group" style="width: 90%; display: none;">
+                                        <c:forEach items="${referendum.getListaIntrebari()}" var="intrebareReferendum">
+                                            <div class="class_intrebare_referendum">
+                                                <p style="font-size: 14px;">${intrebareReferendum.getTextIntrebare()}</p>
+                                                <input type="hidden" name="id_intrebare" 
+                                                       value="${intrebareReferendum.getIdIntrebare()}"/>
+                                                <form>
+                                                    <c:forEach items="${intrebareReferendum.getListaOptiuniReferendum()}" var="item">
+                                                        <div class="radio">
+                                                            <label>
+                                                                <input type="radio" name="optiune_referendum" value="${item.getIdOptiune()}"/>
+                                                                ${item.getTextOptiune()}
+                                                            </label>
+                                                        </div>
+                                                    </c:forEach>
+                                                </form>
                                             </div>
+                                            <br/>
                                         </c:forEach>
                                         <button class="btn btn-primary" onclick="votareReferendum(${referendum.getIdReferendum()},
                                                         '${pageContext.request.userPrincipal.name}')">
@@ -79,6 +108,13 @@
         </div>
         <script>
             var root = '<%=request.getContextPath()%>';
+
+            $(document).ready(function () {
+                $('#btnInchiderePrezentare').click(function () {
+                    $('#div_prezentare_referendum').css('display', 'none');
+                    $('#div_intrebari_referendum').css('display', '');
+                });
+            });
         </script>
     </body>
 </html>

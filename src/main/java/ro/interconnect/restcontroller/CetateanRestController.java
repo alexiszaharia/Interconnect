@@ -39,19 +39,25 @@ public class CetateanRestController {
     @PreAuthorize("hasRole('CETATEAN')")
     public RestResponse<Object> votareReferendum(@RequestParam(value = "nume_user") String numeUser,
             @RequestParam(value = "id_referendum") int idReferendum,
-            @RequestParam(value = "valoare_optiune") int idOptiune, 
-            @RequestParam(value = "id_intrebare") int idIntrebare) {
+            @RequestParam(value = "intrebari") String intrebari) {
         RestResponse<Object> raspuns = new RestResponse<>();
 
         User user = userDao.getUser(numeUser);
-
-        boolean ok = voturiReferendumDao.insertOptiune(user, idReferendum, idOptiune, idIntrebare);
+        boolean ok = true;
+        
+        String[] splitIntrebari = intrebari.split(";");
+        for (String intrebare: splitIntrebari) {
+            int idIntrebare = Integer.parseInt(intrebare.split(",")[0]);
+            int idOptiune = Integer.parseInt(intrebare.split(",")[1]);
+            
+            ok = voturiReferendumDao.insertOptiune(user, idReferendum, idOptiune, idIntrebare);
+        }        
 
         if (ok) {
             raspuns.setCodRetur(0);
         } else {
             raspuns.setCodRetur(-1);
-            raspuns.setMesajConsola("Eroare la adaugarea referendumului!");
+            raspuns.setMesajConsola("Eroare la votarea referendumului!");
         }
 
         return raspuns;

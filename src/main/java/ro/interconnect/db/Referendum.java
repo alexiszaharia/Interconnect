@@ -7,7 +7,9 @@ package ro.interconnect.db;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import ro.interconnect.beans.Atasament;
 
 /**
  *
@@ -22,6 +24,7 @@ public class Referendum {
     private User userCreare;
     private List<IntrebareReferendum> listaIntrebari;
     private double procentParticipare;
+    private List<Atasament> listaAtasamente = new ArrayList<>();
 
     public int getIdReferendum() {
         return idReferendum;
@@ -83,5 +86,13 @@ public class Referendum {
 
     public void setProcentParticipare(double procentParticipare) {
         this.procentParticipare = procentParticipare;
+    }
+
+    public List<Atasament> getListaAtasamente() {
+        return listaAtasamente;
+    }
+
+    public void setListaAtasamente(List<Atasament> listaAtasamente) {
+        this.listaAtasamente = listaAtasamente;
     }
 }

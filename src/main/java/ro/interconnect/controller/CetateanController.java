@@ -148,7 +148,7 @@ public class CetateanController {
                 for (OptiuneReferendum optiuneReferendum : intrebareReferendum.getListaOptiuniReferendum()) {
                     optiuneReferendum.setProcentVot(
                             voturiReferendumDao.getProcentVotOptiune(
-                                    optiuneReferendum.getIdOptiune(), referendum.getIdReferendum(), 
+                                    optiuneReferendum.getIdOptiune(), referendum.getIdReferendum(),
                                     intrebareReferendum.getIdIntrebare()));
                 }
             }
@@ -160,8 +160,26 @@ public class CetateanController {
             } else {
                 oreActive = false;
             }
+            
+            oreActive = true;
 
             votatDeja = referendumDao.referendumVotatDeUtilizator(userCurent, referendum);
+
+            //atasamente referendum
+            List<Atasament> listaAtasamente = new ArrayList<>();
+            String caleDirector = configurareDetalii.getCaleFisiere() + "\\referendum\\" 
+                    + referendum.getIdReferendum();
+            File director = new File(caleDirector);
+            if (director.exists()) {
+                for (File fisier : director.listFiles()) {
+                    Atasament atasament = new Atasament();
+                    atasament.setCale("/referendum_attachment/" + referendum.getIdReferendum() 
+                            + "/" + fisier.getName());
+                    atasament.setDenumire(fisier.getName());
+                    listaAtasamente.add(atasament);
+                }
+                referendum.setListaAtasamente(listaAtasamente);
+            }
         }
 
         model.addAttribute("referendumActiv", referendumActiv);
@@ -196,6 +214,22 @@ public class CetateanController {
             @PathVariable(value = "denumire") String denumire,
             @PathVariable(value = "extensie") String extensie) throws IOException {
         String caleFisier = configurareDetalii.getCaleFisiere() + "\\news\\" + strId + "\\"
+                + denumire + "." + extensie;
+        File file = new File(caleFisier);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM).contentLength(file.length())
+                .body(resource);
+    }
+    
+    @GetMapping(value = "/referendum_attachment/{id}/{denumire}.{extensie}")
+    @PreAuthorize("hasRole('CETATEAN')")
+    public ResponseEntity<InputStreamResource> getAttachmentReferendum(@PathVariable(value = "id") String strId,
+            @PathVariable(value = "denumire") String denumire,
+            @PathVariable(value = "extensie") String extensie) throws IOException {
+        String caleFisier = configurareDetalii.getCaleFisiere() + "\\referendum\\" + strId + "\\"
                 + denumire + "." + extensie;
         File file = new File(caleFisier);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
