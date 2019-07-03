@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-sm-10">
                     <div class="container" style="width: 80%;">
-                        <h2 id="intrebare_referendum"></h2>
+<!--                        <h2 id="intrebare_referendum"></h2>-->
                         <p id="creator_referendum" class="categorie">AUTOR: </p>
                         <p id="data_referendum" class="data">DATA REFERENDUM: </p>
                         <br/>

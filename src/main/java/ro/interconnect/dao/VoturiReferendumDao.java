@@ -5,6 +5,7 @@
  */
 package ro.interconnect.dao;
 
+import java.text.DecimalFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -54,6 +55,8 @@ public class VoturiReferendumDao {
     }
     
     public double getProcentVotOptiune(int idOptiune, int idReferendum, int idIntrebare) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        
         String sql = "SELECT COUNT(*) FROM optiuni_useri_referendum "
                 + "WHERE id_optiune = ? AND id_referendum = ? AND id_intrebare = ?";
         double totalOptiuni = 0.0;
@@ -68,10 +71,12 @@ public class VoturiReferendumDao {
             return 0.0;
         }
         
-        return procentVot*100;
+        return Double.valueOf(decimalFormat.format(procentVot*100));
     }
     
     public double getProcentPrezentaReferendum(int idReferendum) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        
         double procentPrezenta = 0.0;
         double totalPrezentaReferendum = getTotalParticiparePeReferendum(idReferendum);
         int totalCetateni = userDao.getNrUseri(RoluriUtilizatori.CETATEAN);
@@ -79,7 +84,7 @@ public class VoturiReferendumDao {
         
         procentPrezenta = totalPrezentaReferendum / totalCetateniDouble;
         
-        return procentPrezenta*100;
+        return Double.valueOf(decimalFormat.format(procentPrezenta*100));
     }
     
     public boolean insertOptiune(User user, int idReferendum, int idOptiune, int idIntrebare) {
