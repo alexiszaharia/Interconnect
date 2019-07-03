@@ -37,7 +37,6 @@
                            title="Deschide detalii referendum">
                             <div class="panel panel-default elem_lista">
                                 <div class="panel-body">
-                                    <p class="titlu"><c:out value="${item.getIntrebare()}"/></p>
                                     <p class="categorie">AUTOR: <c:out value="${item.getUserCreare().getUserName()}"/></p>
                                     <p class="data">DATA REFERENDUM: <c:out value="${item.getDataReferendumFormatata()}"/></p>
                                 </div>

@@ -60,12 +60,16 @@ public class VoturiReferendumDao {
         String sql = "SELECT COUNT(*) FROM optiuni_useri_referendum "
                 + "WHERE id_optiune = ? AND id_referendum = ? AND id_intrebare = ?";
         double totalOptiuni = 0.0;
+        double totalVoturiPeIntrebare = 0.0;
         double procentVot = 0.0;
         
         try {
             totalOptiuni = jdbcTemplate.queryForObject(sql, Double.class, idOptiune, idReferendum, 
                     idIntrebare);
-            procentVot = totalOptiuni / getTotalVoturiPeIntrebare(idReferendum, idIntrebare);
+            totalVoturiPeIntrebare = getTotalVoturiPeIntrebare(idReferendum, idIntrebare);
+            if (totalVoturiPeIntrebare != 0) {
+                procentVot = totalOptiuni / totalVoturiPeIntrebare;
+            }
         } catch(Exception e) {
             System.out.println("Eroare la metoda getProcentVotOptiune: " + e.getMessage());
             return 0.0;

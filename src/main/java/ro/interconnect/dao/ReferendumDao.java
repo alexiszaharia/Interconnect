@@ -43,7 +43,7 @@ public class ReferendumDao {
 
     public int getNrReferendumuriTrecute() {
         String sql = "SELECT COUNT(*) FROM referendumuri "
-                + "WHERE data_referendum < CURRENT_TIMESTAMP";
+                + "WHERE TRUNC(data_referendum) < TRUNC(SYSDATE)";
         int nrReferendumuri = 0;
 
         try {
@@ -61,7 +61,7 @@ public class ReferendumDao {
                 + "FROM referendumuri r "
                 + "JOIN users u ON r.user_creare = u.id "
                 + "JOIN user_roles ur ON u.id = ur.userid "
-                + "WHERE r.data_referendum < CURRENT_DATE "
+                + "WHERE TRUNC(r.data_referendum) < TRUNC(SYSDATE) "
                 + "ORDER BY r.data_referendum DESC";
         List<Referendum> listaReferendumuri = new ArrayList<Referendum>();
         List<Referendum> listaReferendumuriFinal = new ArrayList<Referendum>();
@@ -218,6 +218,28 @@ public class ReferendumDao {
         try {
             nr = jdbcTemplate.queryForObject(sql, Integer.class,
                     referendum.getIdReferendum(), user.getId());
+            if (nr == 0) {
+                votat = false;
+            } else {
+                votat = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Eroare referendumVotatDeUtilizator: " + e.getMessage());
+            return true;
+        }
+
+        return votat;
+    }
+    
+    public boolean referendumVotatDeUtilizator(User user, int idReferendum) {
+        String sql = "SELECT COUNT(*) FROM optiuni_useri_referendum "
+                + "WHERE id_referendum = ? AND id_user = ?";
+        boolean votat = true;
+        int nr = 1;
+
+        try {
+            nr = jdbcTemplate.queryForObject(sql, Integer.class,
+                    idReferendum, user.getId());
             if (nr == 0) {
                 votat = false;
             } else {

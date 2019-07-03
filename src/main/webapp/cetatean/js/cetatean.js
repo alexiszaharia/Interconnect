@@ -48,7 +48,7 @@ function votareReferendum(idReferendum, numeUser) {
             if (data.codRetur == 0) {
                 $('#div_referendum').empty();
                 $('#div_referendum').html(
-                        '<a href="<%=request.getContextPath()%>/istoric_referendumuri/detalii_referendum/' + idReferendum + '">'
+                        '<a href="' + root + '/istoric_referendumuri/detalii_referendum/' + idReferendum + '">'
                         + 'Vizualizare detalii referendum'
                         + '</a>');
             } else {
