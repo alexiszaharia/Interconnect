@@ -33,6 +33,7 @@ import ro.interconnect.dao.ReferendumDao;
 import ro.interconnect.dao.StireDao;
 import ro.interconnect.dao.UserDao;
 import ro.interconnect.dao.VoturiReferendumDao;
+import ro.interconnect.db.IntrebareReferendum;
 import ro.interconnect.db.OptiuneReferendum;
 import ro.interconnect.db.Referendum;
 import ro.interconnect.db.Stire;
@@ -143,10 +144,13 @@ public class CetateanController {
             referendum = referendumDao.getReferendumActiv();
             referendum.setProcentParticipare(voturiReferendumDao.getProcentPrezentaReferendum(
                     referendum.getIdReferendum()));
-            for (OptiuneReferendum optiuneReferendum : referendum.getListaOptiuni()) {
-                optiuneReferendum.setProcentVot(
-                        voturiReferendumDao.getProcentVotOptiune(
-                                optiuneReferendum.getIdOptiune(), referendum.getIdReferendum()));
+            for (IntrebareReferendum intrebareReferendum : referendum.getListaIntrebari()) {
+                for (OptiuneReferendum optiuneReferendum : intrebareReferendum.getListaOptiuniReferendum()) {
+                    optiuneReferendum.setProcentVot(
+                            voturiReferendumDao.getProcentVotOptiune(
+                                    optiuneReferendum.getIdOptiune(), referendum.getIdReferendum(), 
+                                    intrebareReferendum.getIdIntrebare()));
+                }
             }
 
             Calendar calendar = Calendar.getInstance();
@@ -189,13 +193,13 @@ public class CetateanController {
     @GetMapping(value = "/news_attachment/{id}/{denumire}.{extensie}")
     @PreAuthorize("hasRole('CETATEAN')")
     public ResponseEntity<InputStreamResource> getAttachmentNews(@PathVariable(value = "id") String strId,
-            @PathVariable(value = "denumire") String denumire, 
+            @PathVariable(value = "denumire") String denumire,
             @PathVariable(value = "extensie") String extensie) throws IOException {
-        String caleFisier = configurareDetalii.getCaleFisiere() + "\\news\\" + strId + "\\" 
+        String caleFisier = configurareDetalii.getCaleFisiere() + "\\news\\" + strId + "\\"
                 + denumire + "." + extensie;
         File file = new File(caleFisier);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-        
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM).contentLength(file.length())

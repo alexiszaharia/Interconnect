@@ -24,6 +24,7 @@ import ro.interconnect.config.ConfigurareDetalii;
 import ro.interconnect.dao.ReferendumDao;
 import ro.interconnect.dao.StireDao;
 import ro.interconnect.dao.UserDao;
+import ro.interconnect.db.IntrebareReferendum;
 import ro.interconnect.db.OptiuneReferendum;
 import ro.interconnect.db.Referendum;
 import ro.interconnect.db.Stire;
@@ -36,6 +37,7 @@ import ro.interconnect.enums.CategoriiStiri;
  */
 @RestController
 public class AdministratiePublicaRestController {
+
     @Autowired
     private ReferendumDao referendumDao;
     @Autowired
@@ -44,16 +46,17 @@ public class AdministratiePublicaRestController {
     private StireDao stireDao;
     @Autowired
     private ConfigurareDetalii configurare;
-    
-    @RequestMapping(value = "/adaugare_referendum", method = RequestMethod.POST, 
+
+    @RequestMapping(value = "/adaugare_referendum", method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
     @PreAuthorize("hasRole('ADMINISTRATIE_PUBLICA')")
-    public RestResponse<Object> adaugareReferendum(@RequestParam(value = "nume_user") String numeUser, 
-            @RequestParam(value = "intrebare") String intrebare, 
-            @RequestParam(value = "data") String data, 
-            @RequestParam(value = "optiuni") String optiuni) {
+    public RestResponse<Object> adaugareReferendum(@RequestParam(value = "nume_user") String numeUser,
+            @RequestParam(value = "intrebari") String intrebari,
+            @RequestParam(value = "data_referendum") String data,
+            @RequestParam(value = "files", required = false) MultipartFile[] files,
+            @RequestParam(value = "prezentare_referendum") String prezentare) {
         RestResponse<Object> raspuns = new RestResponse<>();
-        
+
         SimpleDateFormat formatRequest = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formatReferendum = new SimpleDateFormat("dd.MM.yyyy");
         Date dataRef;
@@ -67,63 +70,86 @@ public class AdministratiePublicaRestController {
         }
         dataFormata = formatReferendum.format(dataRef);
         
+        if (referendumDao.existaReferendum(dataFormata)) {
+            raspuns.setCodRetur(-1);
+            raspuns.setMesajConsola("Exista deja referendum la data furnizata!");
+            raspuns.setMesajUtilizator("Exista deja referendum la data furnizata!");
+            
+            return raspuns;
+        }
+
         User user = userDao.getUser(numeUser);
-        
+
         //definire referendum
         Referendum referendum = new Referendum();
-        List<OptiuneReferendum> listaOptiuni = new ArrayList<>();
-        
-        referendum.setIntrebare(intrebare);
+        referendum.setPrezentare(prezentare);
         referendum.setDataReferendumFormatata(dataFormata);
         referendum.setUserCreare(user);
-        
-        String[] arrayOptiuni = optiuni.split(";");
-        for (String optiune: arrayOptiuni) {
-            OptiuneReferendum optiuneReferendum = new OptiuneReferendum();
-            optiuneReferendum.setTextOptiune(optiune);
-            listaOptiuni.add(optiuneReferendum);
+
+        //pregatire intrebari
+        List<IntrebareReferendum> listaIntrebari = new ArrayList<>();
+        String[] arrayIntrebari = intrebari.split("<>");
+        for (String intrebare : arrayIntrebari) {
+            IntrebareReferendum intrebareReferendum = new IntrebareReferendum();
+            List<OptiuneReferendum> listaOptiuni = new ArrayList<>();
+            String[] splitIntrebare = intrebare.split(";");
+            for (int i = 0; i < splitIntrebare.length; i++) {
+                if (i == 0) {
+                    intrebareReferendum.setTextIntrebare(splitIntrebare[i]);
+                } else {
+                    OptiuneReferendum optiuneReferendum = new OptiuneReferendum();
+                    optiuneReferendum.setTextOptiune(splitIntrebare[i]);
+                    listaOptiuni.add(optiuneReferendum);
+                }
+            }
+            intrebareReferendum.setListaOptiuniReferendum(listaOptiuni);
+            listaIntrebari.add(intrebareReferendum);
         }
-        referendum.setListaOptiuni(listaOptiuni);
-        
+
+        referendum.setListaIntrebari(listaIntrebari);
+
         //definire anunt
         String preview = "Se va desfasura un referendum pe data de " + dataFormata + ".";
-        String continut = "Se va desfasura un referendum pe data de " + dataFormata 
-                + ". Intrebarea va fi: " + referendum.getIntrebare() 
-                + ". Optiunile de raspuns sunt: ";
-        boolean prima = true;
-        for (OptiuneReferendum optiuneReferendum: referendum.getListaOptiuni()) {
-            if (prima) {
-                continut += optiuneReferendum.getTextOptiune();
-                prima = false;
-            } else {
-                continut += ", " + optiuneReferendum.getTextOptiune();
+        String continut = "Se va desfasura un referendum pe data de " + dataFormata
+                + " cu urmatoarea lista de intrebari:";
+
+        for (IntrebareReferendum intrebareReferendum : referendum.getListaIntrebari()) {
+            continut += "<br/><br/>" + intrebareReferendum.getTextIntrebare()
+                    + " cu optiunile: ";
+            for (int i = 0; i < intrebareReferendum.getListaOptiuniReferendum().size(); i++) {
+                if (i == 0) {
+                    continut += intrebareReferendum.getListaOptiuniReferendum().get(i).getTextOptiune();
+                } else {
+                    continut += ", " + intrebareReferendum.getListaOptiuniReferendum().get(i).getTextOptiune();
+                }
             }
         }
-        continut += ".";
-        
+
+        continut += "<br/><br/>" + referendum.getPrezentare();
+
         Stire stire = new Stire();
         stire.setTitluStire("Referendum pe data de " + dataFormata);
         stire.setPreviewStire(preview);
         stire.setTipStire(CategoriiStiri.NEWS_ALERT.getCategorieStiri());
         stire.setContinutStire(continut);
         stire.setAnunt(1);
-        stire.setUserPublicare(user.getId());        
-              
-        
-        boolean ok = referendumDao.insertReferendum(referendum);
-        ok = stireDao.insertStire(stire);
-        
-        
+        stire.setUserPublicare(user.getId());
+
+        boolean ok = referendumDao.insertReferendum(referendum, files);
+        if (ok) {
+            ok = stireDao.insertStire(stire);
+        }
+
         if (ok) {
             raspuns.setCodRetur(0);
         } else {
             raspuns.setCodRetur(-1);
             raspuns.setMesajConsola("Eroare la adaugarea referendumului!");
         }
-        
+
         return raspuns;
     }
-    
+
 //    @RequestMapping(value = "/adaugare_stire", method = RequestMethod.POST, 
 //            produces = "application/json; charset=UTF-8")
 //    @PreAuthorize("hasRole('ADMINISTRATIE_PUBLICA')")
@@ -155,8 +181,7 @@ public class AdministratiePublicaRestController {
 //        
 //        return raspuns;
 //    }
-    
-    @RequestMapping(value = "/adaugare_stire", method = RequestMethod.POST, 
+    @RequestMapping(value = "/adaugare_stire", method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
     @PreAuthorize("hasRole('ADMINISTRATIE_PUBLICA')")
     public RestResponse<Object> adaugareStire(@RequestParam(value = "nume_user") String numeUser,

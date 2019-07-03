@@ -47,23 +47,45 @@
                     <div id="alerta_adaugare_referendum" class="alert" 
                          style="display: none; width: 90%;">
                     </div>
-                    <div class="form-group" style="width: 90%;">
-                        <label for="intrebare_referendum">Intrebare referendum:</label>
-                        <input type="text" class="form-control" id="intrebare_referendum"/>
-                        <br/>
-                        <label for="data_referendum">Data referendum:</label>
-                        <input type="date" class="form-control" id="data_referendum" min="<%=dataMin %>"/>
-                        <br/>
-                        <label>Optiuni:</label>
-                        <div id="div_optiuni">
-                            <input type="text" class="form-control" name="optiune"/>
+                    <form id="form_adaugare_referendum" method="POST" 
+                          enctype="multipart/form-data">
+                        <div class="form-group" style="width: 90%;">
+                            <label for="files">Atasamente:</label>
+                            <input type="file" id="files" name="files" multiple="multiple"/>
                             <br/>
-                            <input type="text" class="form-control" name="optiune"/>
+                            <label for="prezentare_referendum">Prezentare referendum:</label>
+                            <textarea class="form-control" id="prezentare_referendum" 
+                                      name="prezentare_referendum" rows="10"></textarea>
                             <br/>
+                            <label for="data_referendum">Data referendum:</label>
+                            <input type="date" class="form-control" id="data_referendum" 
+                                   name="data_referendum" min="<%=dataMin%>"/>
+                            <br/>                      
                         </div>
-                        <i class="fas fa-plus-circle" style="font-size: 20px; cursor: pointer;" 
-                           title="Adauga optiune" id="btn_adauga_optiune"></i>
+                    </form>
+                    <hr/>
+                    <div class="form-group" style="width: 90%;">
+                        <p>Intrebari salvate: <span id="nr_intrebari_salvate">0</span></p>
+                        <div id="div_intrebare_referendum">
+                            <label for="intrebare_referendum">Intrebare referendum:</label>
+                            <input type="text" class="form-control" id="intrebare_referendum"/>
+                            <br/>
+                            <label>Optiuni:</label>
+                            <div id="div_optiuni">
+                                <input type="text" class="form-control" name="optiune"/>
+                                <br/>
+                                <input type="text" class="form-control" name="optiune"/>
+                                <br/>
+                            </div>
+                            <i class="fas fa-plus-circle" style="font-size: 20px; cursor: pointer;" 
+                               title="Adauga optiune" id="btn_adauga_optiune"></i>
+                        </div>
+                        <br/>
+                        <button id="btn_salvare_intrebare" class="btn btn-success">
+                            Salvare intrebare
+                        </button>
                     </div>
+                    <br/>
                     <button class="btn btn-primary" 
                             onclick="adaugareReferendum('${pageContext.request.userPrincipal.name}')">
                         Trimitere
@@ -74,9 +96,48 @@
 
         <script>
             var root = '<%=request.getContextPath()%>';
+            var nrIntrebariSalvate = 0;
+            var intrebariSalvate = '';
 
             $('#btn_adauga_optiune').click(function () {
                 $('#div_optiuni').append('<input type="text" class="form-control" name="optiune"/><br/>');
+            });
+
+            $('#btn_salvare_intrebare').click(function () {
+                $('#alerta_adaugare_referendum').removeClass('alert-success');
+                $('#alerta_adaugare_referendum').removeClass('alert-danger');
+                $('#alerta_adaugare_referendum').empty();
+
+                var intrebare = $('#intrebare_referendum').val();
+                var optiuni = getOptiuni();
+
+                if (intrebare == '') {
+                    $('#alerta_adaugare_referendum').css('display', '');
+                    $('#alerta_adaugare_referendum').addClass('alert-danger');
+                    $('#alerta_adaugare_referendum').html('Intrebarea nu poate fi goala!');
+                    return;
+                }
+                if (optiuni == false) {
+                    $('#alerta_adaugare_referendum').css('display', '');
+                    $('#alerta_adaugare_referendum').addClass('alert-danger');
+                    $('#alerta_adaugare_referendum').html('Trebuie completate cel putin doua optiuni de raspuns!');
+                    return;
+                }
+
+                nrIntrebariSalvate++;
+                if (intrebariSalvate == '') {
+                    intrebariSalvate += intrebare + ';' + optiuni;
+                } else {
+                    intrebariSalvate += '<>' + intrebare + ';' + optiuni;
+                }
+                $('#nr_intrebari_salvate').html(nrIntrebariSalvate);
+
+                $('#intrebare_referendum').val('');
+                $('input[name=optiune]').each(function (i, elem) {
+                    $(this).val('');
+                });
+
+                console.log('nr salvate = ' + nrIntrebariSalvate + ' intrebari = ' + intrebariSalvate);
             });
         </script>
     </body>

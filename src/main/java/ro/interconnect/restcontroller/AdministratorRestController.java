@@ -187,7 +187,7 @@ public class AdministratorRestController {
     @RequestMapping(value = "/import_utilizatori", method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public RestResponse<Object> adaugareStire(
+    public RestResponse<Object> importUtilizatori(
             @RequestParam(value = "files_csv", required = false) MultipartFile[] files) {
         RestResponse<Object> raspuns = new RestResponse<>();
 

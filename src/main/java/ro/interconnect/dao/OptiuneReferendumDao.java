@@ -24,13 +24,13 @@ public class OptiuneReferendumDao {
     @Autowired
     private MapperOptiuniReferendum mapperOptiuniReferendum;
     
-    public List<OptiuneReferendum> getOptiuni(int idReferendum) {
+    public List<OptiuneReferendum> getOptiuni(int idIntrebare) {
         String sql = "SELECT id, text_optiune FROM optiuni "
-                + "WHERE id_referendum = ?";
+                + "WHERE id_intrebare = ?";
         List<OptiuneReferendum> listaOptiuni = new ArrayList<>();
         
         try {
-            listaOptiuni = jdbcTemplate.query(sql, mapperOptiuniReferendum, idReferendum);
+            listaOptiuni = jdbcTemplate.query(sql, mapperOptiuniReferendum, idIntrebare);
         } catch(Exception e) {
             System.out.println("Eroare la metoda getOptiuni: " + e.getMessage());
             return new ArrayList<OptiuneReferendum>();
@@ -40,15 +40,15 @@ public class OptiuneReferendumDao {
     }
     
     public boolean insertListaOptiuniReferendum(List<OptiuneReferendum> listaOptiuni, 
-            int idReferendum) {
-        String sql = "INSERT INTO optiuni (text_optiune, id_referendum) "
+            int idIntrebare) {
+        String sql = "INSERT INTO optiuni (text_optiune, id_intrebare) "
                 + "VALUES (?, ?)";
         boolean ok = true;
         
         try {
             for(OptiuneReferendum optiuneReferendum: listaOptiuni) {
                 int rows = jdbcTemplate.update(sql, optiuneReferendum.getTextOptiune(), 
-                        idReferendum);
+                        idIntrebare);
                 if (rows == 0) {
                     ok = false;
                 }

@@ -15,12 +15,12 @@ import java.util.List;
  */
 public class Referendum {
     private int idReferendum;
-    private String intrebare;
+    private String prezentare;
     private Date dataReferendum;
     private String dataReferendumFormatata;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     private User userCreare;
-    private List<OptiuneReferendum> listaOptiuni;
+    private List<IntrebareReferendum> listaIntrebari;
     private double procentParticipare;
 
     public int getIdReferendum() {
@@ -31,12 +31,12 @@ public class Referendum {
         this.idReferendum = idReferendum;
     }
 
-    public String getIntrebare() {
-        return intrebare;
+    public String getPrezentare() {
+        return prezentare;
     }
 
-    public void setIntrebare(String intrebare) {
-        this.intrebare = intrebare;
+    public void setPrezentare(String prezentare) {
+        this.prezentare = prezentare;
     }
 
     public Date getDataReferendum() {
@@ -69,12 +69,12 @@ public class Referendum {
         this.userCreare = userCreare;
     }
 
-    public List<OptiuneReferendum> getListaOptiuni() {
-        return listaOptiuni;
+    public List<IntrebareReferendum> getListaIntrebari() {
+        return listaIntrebari;
     }
 
-    public void setListaOptiuni(List<OptiuneReferendum> listaOptiuni) {
-        this.listaOptiuni = listaOptiuni;
+    public void setListaIntrebari(List<IntrebareReferendum> listaIntrebari) {
+        this.listaIntrebari = listaIntrebari;
     }
 
     public double getProcentParticipare() {

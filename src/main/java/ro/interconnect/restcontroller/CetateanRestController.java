@@ -39,12 +39,13 @@ public class CetateanRestController {
     @PreAuthorize("hasRole('CETATEAN')")
     public RestResponse<Object> votareReferendum(@RequestParam(value = "nume_user") String numeUser,
             @RequestParam(value = "id_referendum") int idReferendum,
-            @RequestParam(value = "valoare_optiune") int idOptiune) {
+            @RequestParam(value = "valoare_optiune") int idOptiune, 
+            @RequestParam(value = "id_intrebare") int idIntrebare) {
         RestResponse<Object> raspuns = new RestResponse<>();
 
         User user = userDao.getUser(numeUser);
 
-        boolean ok = voturiReferendumDao.insertOptiune(user, idReferendum, idOptiune);
+        boolean ok = voturiReferendumDao.insertOptiune(user, idReferendum, idOptiune, idIntrebare);
 
         if (ok) {
             raspuns.setCodRetur(0);
