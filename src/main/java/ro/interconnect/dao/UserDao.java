@@ -57,11 +57,12 @@ public class UserDao {
         return user;
     }
     
-    public List<User> getListaUseriPePagina(int nrStart, int nrFinal) {
+    public List<User> getListaUseriPePagina(int nrStart, int nrFinal, String continut) {
         String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare, "
                 + "u.nume, u.prenume, u.varsta, u.judet, u.localitate, u.adresa, u.sex "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
-                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA' "
+                + "WHERE (role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA') "
+                + "AND u.username LIKE '%" + continut + "%' "
                 + "ORDER BY u.username ASC";
         List<User> listaUseri = new ArrayList<User>();
         List<User> listaUseriFinal = new ArrayList<User>();
@@ -96,9 +97,10 @@ public class UserDao {
         return nrUtilizatori;
     }
     
-    public int getNrCetateniAdministratie() {
+    public int getNrCetateniAdministratie(String continut) {
         String sql = "SELECT COUNT(*) FROM user_roles "
-                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA'";
+                + "WHERE (role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA') "
+                + "AND username LIKE '%" + continut + "%'";
         int nrUtilizatori = 0;
         
         try {

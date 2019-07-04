@@ -25,16 +25,23 @@ public class StireDao {
     @Autowired
     private MapperStire mapperStire;
 
-    public List<Stire> getListaStiriPePagina(int nrStart, int nrFinal) {
-        String sql = "SELECT * FROM stiri ORDER BY data_publicare DESC";
+    public List<Stire> getListaStiriPePagina(int nrStart, int nrFinal, String continut, String autor) {
+        String sql = "SELECT * FROM stiri s LEFT JOIN users u ON s.user_publicare = u.id "
+                + "WHERE (s.continut_stire LIKE '%" + continut + "%' "
+                + "    OR s.tip_stire LIKE '%" + continut + "%' "
+                + "    OR s.preview LIKE '%" + continut + "%'  "
+                + "    OR s.titlu_stire LIKE '%" + continut + "%') "
+                + "AND u.username LIKE '%" + autor + "%' "
+                + "ORDER BY data_publicare DESC";
         List<Stire> listaStiri = new ArrayList<Stire>();
         List<Stire> listaStiriFinal = new ArrayList<Stire>();
         try {
             listaStiri = jdbcTemplate.query(sql, mapperStire);
 
             for (int i = nrStart - 1; i <= nrFinal - 1; i++) {
-                if (i > listaStiri.size() - 1)
+                if (i > listaStiri.size() - 1) {
                     break;
+                }
                 listaStiriFinal.add(listaStiri.get(i));
             }
         } catch (Exception e) {
@@ -44,7 +51,7 @@ public class StireDao {
 
         return listaStiriFinal;
     }
-    
+
     public List<Stire> getListaAnunturi() {
         String sql = "SELECT * FROM stiri WHERE anunt = 1 ORDER BY data_publicare DESC";
         List<Stire> listaStiri = new ArrayList<Stire>();
@@ -71,7 +78,7 @@ public class StireDao {
 
         return stire;
     }
-    
+
     public int getIdStire(String titluStire, String previewStire) {
         String sql = "SELECT id FROM stiri WHERE titlu_stire LIKE ? AND preview LIKE ?";
         int id = 0;
@@ -86,8 +93,14 @@ public class StireDao {
         return id;
     }
 
-    public int getNumarStiri() {
-        String sql = "SELECT COUNT(*) FROM stiri";
+    public int getNumarStiri(String continut, String autor) {
+        String sql = "SELECT COUNT(*) FROM stiri s LEFT JOIN users u ON s.user_publicare = u.id "
+                + "WHERE (s.continut_stire LIKE '%" + continut + "%' "
+                + "    OR s.tip_stire LIKE '%" + continut + "%' "
+                + "    OR s.preview LIKE '%" + continut + "%'  "
+                + "    OR s.titlu_stire LIKE '%" + continut + "%') "
+                + "AND u.username LIKE '%" + autor + "%'";
+
         int nrStiri;
         try {
             nrStiri = jdbcTemplate.queryForObject(sql, Integer.class);
@@ -98,27 +111,27 @@ public class StireDao {
 
         return nrStiri;
     }
-    
+
     public boolean insertStire(Stire stire) {
         String sql = "INSERT INTO stiri (continut_stire, data_publicare, user_publicare, tip_stire, "
                 + "preview, titlu_stire, anunt) "
                 + "VALUES (?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
         boolean ok = true;
-        
+
         try {
-            int rows = jdbcTemplate.update(sql, stire.getContinutStire(), stire.getUserPublicare(), 
-                    stire.getTipStire(), stire.getPreviewStire(), stire.getTitluStire(), 
+            int rows = jdbcTemplate.update(sql, stire.getContinutStire(), stire.getUserPublicare(),
+                    stire.getTipStire(), stire.getPreviewStire(), stire.getTitluStire(),
                     stire.getAnunt());
             if (rows == 0) {
                 ok = false;
             } else {
                 ok = true;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Eroare insertStire: " + e.getMessage());
             return false;
         }
-        
+
         return ok;
     }
 }

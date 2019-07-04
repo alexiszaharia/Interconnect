@@ -41,9 +41,11 @@ public class ReferendumDao {
     @Autowired
     private ConfigurareDetalii configurare;
 
-    public int getNrReferendumuriTrecute() {
-        String sql = "SELECT COUNT(*) FROM referendumuri "
-                + "WHERE TRUNC(data_referendum) < TRUNC(SYSDATE)";
+    public int getNrReferendumuriTrecute(String continut, String autor) {
+        String sql = "SELECT COUNT(*) FROM referendumuri r LEFT JOIN USERS ON r.user_creare = u.id "
+                + "WHERE TRUNC(r.data_referendum) < TRUNC(SYSDATE) "
+                + "AND r.prezentare LIKE '%" + continut + "%' "
+                + "AND u.username LIKE '%" + autor + "%'";
         int nrReferendumuri = 0;
 
         try {
@@ -56,12 +58,14 @@ public class ReferendumDao {
         return nrReferendumuri;
     }
 
-    public List<Referendum> getListaReferendumuriTrecutePePagina(int nrStart, int nrFinal) {
+    public List<Referendum> getListaReferendumuriTrecutePePagina(int nrStart, int nrFinal, String continut, String autor) {
         String sql = "SELECT r.id, r.prezentare, r.data_referendum, u.id, u.username, ur.role "
                 + "FROM referendumuri r "
                 + "JOIN users u ON r.user_creare = u.id "
                 + "JOIN user_roles ur ON u.id = ur.userid "
                 + "WHERE TRUNC(r.data_referendum) < TRUNC(SYSDATE) "
+                + "AND r.prezentare LIKE '%" + continut + "%' "
+                + "AND u.username LIKE '%" + autor + "%' "
                 + "ORDER BY r.data_referendum DESC";
         List<Referendum> listaReferendumuri = new ArrayList<Referendum>();
         List<Referendum> listaReferendumuriFinal = new ArrayList<Referendum>();

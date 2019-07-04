@@ -65,14 +65,14 @@ public class ComunController {
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
-                RoluriUtilizatori.ADMINISTRATIE_PUBLICA)).doubleValue();
+                RoluriUtilizatori.ADMINISTRATIE_PUBLICA, "", "")).doubleValue();
         totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
         }
         
         List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
-                1, configurareDetalii.getNrElemPePagina(), RoluriUtilizatori.ADMINISTRATIE_PUBLICA);
+                1, configurareDetalii.getNrElemPePagina(), RoluriUtilizatori.ADMINISTRATIE_PUBLICA, "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
@@ -80,6 +80,8 @@ public class ComunController {
         model.addAttribute("listaInitiative", listaInitiative);
         model.addAttribute("linkPagina", "initiative_administratie");
         model.addAttribute("tipInitiativa", "administratie publica");
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
         
         return "comun/initiative.jsp";
     }
@@ -93,7 +95,7 @@ public class ComunController {
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
-                RoluriUtilizatori.ADMINISTRATIE_PUBLICA)).doubleValue();
+                RoluriUtilizatori.ADMINISTRATIE_PUBLICA, "", "")).doubleValue();
         totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
@@ -102,7 +104,7 @@ public class ComunController {
         List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
                 (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
                 paginaCurenta * configurareDetalii.getNrElemPePagina(), 
-                RoluriUtilizatori.ADMINISTRATIE_PUBLICA);
+                RoluriUtilizatori.ADMINISTRATIE_PUBLICA, "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
@@ -110,6 +112,46 @@ public class ComunController {
         model.addAttribute("listaInitiative", listaInitiative);
         model.addAttribute("linkPagina", "initiative_administratie");
         model.addAttribute("tipInitiativa", "administratie publica");
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
+        
+        return "comun/initiative.jsp";
+    }
+    
+    @RequestMapping(value = "/initiative_administratie/{pagina}/{continut}&{autor}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String initiativeAdministratiePageSelected(
+            @PathVariable(value = "pagina") String strPaginaCurenta,
+            @PathVariable(value = "continut") String paramContinut, 
+            @PathVariable(value = "autor") String paramAutor,
+            Model model) {
+        String continut = (paramContinut == null) ? "" : paramContinut;
+        String autor = (paramAutor == null) ? "" : paramAutor;
+        
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
+                RoluriUtilizatori.ADMINISTRATIE_PUBLICA, continut, autor)).doubleValue();
+        totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), 
+                RoluriUtilizatori.ADMINISTRATIE_PUBLICA, continut, autor);
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaInitiative", listaInitiative);
+        model.addAttribute("linkPagina", "initiative_administratie");
+        model.addAttribute("tipInitiativa", "administratie publica");
+        model.addAttribute("continut", continut);
+        model.addAttribute("autor", autor);
         
         return "comun/initiative.jsp";
     }
@@ -124,14 +166,14 @@ public class ComunController {
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
-                RoluriUtilizatori.CETATEAN)).doubleValue();
+                RoluriUtilizatori.CETATEAN, "", "")).doubleValue();
         totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
         }
         
         List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
-                1, configurareDetalii.getNrElemPePagina(), RoluriUtilizatori.CETATEAN);
+                1, configurareDetalii.getNrElemPePagina(), RoluriUtilizatori.CETATEAN, "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
@@ -139,6 +181,8 @@ public class ComunController {
         model.addAttribute("listaInitiative", listaInitiative);
         model.addAttribute("linkPagina", "initiative_cetateni");
         model.addAttribute("tipInitiativa", "cetateni");
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
         
         return "comun/initiative.jsp";
     }
@@ -152,7 +196,7 @@ public class ComunController {
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
-                RoluriUtilizatori.CETATEAN)).doubleValue();
+                RoluriUtilizatori.CETATEAN, "", "")).doubleValue();
         totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
@@ -161,7 +205,7 @@ public class ComunController {
         List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
                 (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
                 paginaCurenta * configurareDetalii.getNrElemPePagina(), 
-                RoluriUtilizatori.CETATEAN);
+                RoluriUtilizatori.CETATEAN, "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
@@ -169,6 +213,46 @@ public class ComunController {
         model.addAttribute("listaInitiative", listaInitiative);
         model.addAttribute("linkPagina", "initiative_cetateni");
         model.addAttribute("tipInitiativa", "cetateni");
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
+        
+        return "comun/initiative.jsp";
+    }
+    
+    @RequestMapping(value = "/initiative_cetateni/{pagina}/{continut}&{autor}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String initiativeCetateniPageSelected(
+            @PathVariable(value = "pagina") String strPaginaCurenta, 
+            @PathVariable(value = "continut") String paramContinut, 
+            @PathVariable(value = "autor") String paramAutor,
+            Model model) {
+        String continut = (paramContinut == null) ? "" : paramContinut;
+        String autor = (paramAutor == null) ? "" : paramAutor;
+        
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
+                RoluriUtilizatori.CETATEAN, continut, autor)).doubleValue();
+        totalPagini = Math.ceil(nrInitiative / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<Initiativa> listaInitiative = initiativaDao.getListaInitiativePePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), 
+                RoluriUtilizatori.CETATEAN, continut, autor);
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaInitiative", listaInitiative);
+        model.addAttribute("linkPagina", "initiative_cetateni");
+        model.addAttribute("tipInitiativa", "cetateni");
+        model.addAttribute("continut", continut);
+        model.addAttribute("autor", autor);
         
         return "comun/initiative.jsp";
     }
@@ -224,7 +308,7 @@ public class ComunController {
         double totalPagini;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute())
+        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute("", ""))
                 .doubleValue();
         totalPagini = Math.ceil(nrReferendumuri / nrElemPePagina);
         if (totalPagini == 0) {
@@ -232,12 +316,14 @@ public class ComunController {
         }
         
         List<Referendum> listaReferendumuri = referendumDao.getListaReferendumuriTrecutePePagina(
-                1, configurareDetalii.getNrElemPePagina());
+                1, configurareDetalii.getNrElemPePagina(), "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaReferendumuri", listaReferendumuri);
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
         
         return "comun/istoric_referendumuri.jsp";
     }
@@ -250,7 +336,7 @@ public class ComunController {
         double totalPagini;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute())
+        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute("", ""))
                 .doubleValue();
         totalPagini = Math.ceil(nrReferendumuri / nrElemPePagina);
         if (totalPagini == 0) {
@@ -259,12 +345,49 @@ public class ComunController {
         
         List<Referendum> listaReferendumuri = referendumDao.getListaReferendumuriTrecutePePagina(
                 (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
-                paginaCurenta * configurareDetalii.getNrElemPePagina());
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaReferendumuri", listaReferendumuri);
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
+        
+        return "comun/istoric_referendumuri.jsp";
+    }
+    
+    @RequestMapping(value = "/istoric_referendumuri/{pagina}/{continut}&{autor}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
+    public String istoricReferendumuriPageSelected(
+            @PathVariable(value = "pagina") String strPaginaCurenta, 
+            @PathVariable(value = "continut") String paramContinut, 
+            @PathVariable(value = "autor") String paramAutor,
+            Model model) {
+        String continut = (paramContinut == null) ? "" : paramContinut;
+        String autor = (paramAutor == null) ? "" : paramAutor;
+        
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrReferendumuri = Integer.valueOf(referendumDao.getNrReferendumuriTrecute(continut, autor))
+                .doubleValue();
+        totalPagini = Math.ceil(nrReferendumuri / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<Referendum> listaReferendumuri = referendumDao.getListaReferendumuriTrecutePePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), continut, autor);
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaReferendumuri", listaReferendumuri);
+        model.addAttribute("continut", continut);
+        model.addAttribute("autor", autor);
         
         return "comun/istoric_referendumuri.jsp";
     }

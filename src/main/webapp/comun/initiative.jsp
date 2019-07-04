@@ -32,6 +32,20 @@
                 </div>
                 <div class="col-sm-10">
                     <h1>Initiative ${tipInitiativa}</h1>
+                    <div id="filtre" class="form-inline">
+                        <div class="form-group">
+                            <label for="continut">Continut:</label>
+                            <input type="text" class="form-control" id="continut" 
+                                   value="${continut}">
+                        </div>
+                        <div class="form-group">
+                            <label for="autor">Autor:</label>
+                            <input type="text" class="form-control" id="autor" 
+                                   value="${autor}">
+                        </div>
+                        <button id="btnCautare" class="btn btn-primary">Cautare</button>
+                    </div>
+                    <br/>
                     <c:forEach items="${listaInitiative}" var="item">
                         <a href="<%=request.getContextPath()%>/initiative/detalii_initiativa/${item.getId()}" title="Deschide initiativa">
                             <div class="panel panel-default elem_lista">
@@ -45,21 +59,36 @@
                     </c:forEach>
                     <ul class="pager">
                         <li <c:if test="${previousPage <= 0}">class="disabled"</c:if>>
-                            <a href="<%=request.getContextPath()%>/${linkPagina}/${previousPage}">Previous</a>
-                        </li>
-                        <ul class="pagination">
+                            <a href="<%=request.getContextPath()%>/${linkPagina}/${previousPage}<c:if test="${!continut.isEmpty() || !autor.isEmpty()}">/${continut}&${autor}</c:if>">Previous</a>
+                            </li>
+                            <ul class="pagination">
                             <c:forEach var="item" begin="1" end="${totalPagini}">
                                 <li <c:if test="${item == paginaCurenta}">class="active"</c:if>>
-                                    <a href="<%=request.getContextPath()%>/${linkPagina}/${item}">${item}</a>
-                                </li>
+                                    <a href="<%=request.getContextPath()%>/${linkPagina}/${item}<c:if test="${!continut.isEmpty() || !autor.isEmpty()}">/${continut}&${autor}</c:if>">${item}</a>
+                                    </li>
                             </c:forEach>
                         </ul>
                         <li <c:if test="${nextPage > totalPagini}">class="disabled"</c:if>>
-                            <a href="<%=request.getContextPath()%>/${linkPagina}/${nextPage}">Next</a>
-                        </li>
-                    </ul>
+                            <a href="<%=request.getContextPath()%>/${linkPagina}/${nextPage}<c:if test="${!continut.isEmpty() || !autor.isEmpty()}">/${continut}&${autor}</c:if>">Next</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <script>
+                var root = '<%=request.getContextPath()%>';
+
+                $('#btnCautare').click(function () {
+                    var continut = $('#continut').val();
+                    var autor = $('#autor').val();
+
+                    if (continut != '' || autor != '') {
+                        window.location = root + '/${linkPagina}/1/' + continut + '&' + autor;
+                    } else {
+                        window.location = root + '/${linkPagina}/1';
+                    }
+                });
+            </script>
     </body>
 </html>

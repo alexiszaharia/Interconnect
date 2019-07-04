@@ -64,18 +64,20 @@ public class CetateanController {
         double totalPagini;
 
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrStiri = Integer.valueOf(stireDao.getNumarStiri()).doubleValue();
+        double nrStiri = Integer.valueOf(stireDao.getNumarStiri("", "")).doubleValue();
         totalPagini = Math.ceil(nrStiri / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
         }
 
-        List<Stire> listaStiri = stireDao.getListaStiriPePagina(1, configurareDetalii.getNrElemPePagina());
+        List<Stire> listaStiri = stireDao.getListaStiriPePagina(1, configurareDetalii.getNrElemPePagina(), "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaStiri", listaStiri);
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
 
         return "cetatean/news.jsp";
     }
@@ -87,7 +89,7 @@ public class CetateanController {
         double totalPagini;
 
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrStiri = Integer.valueOf(stireDao.getNumarStiri()).doubleValue();
+        double nrStiri = Integer.valueOf(stireDao.getNumarStiri("", "")).doubleValue();
         totalPagini = Math.ceil(nrStiri / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
@@ -95,12 +97,47 @@ public class CetateanController {
 
         List<Stire> listaStiri = stireDao.getListaStiriPePagina(
                 (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1,
-                paginaCurenta * configurareDetalii.getNrElemPePagina());
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), "", "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaStiri", listaStiri);
+        model.addAttribute("continut", "");
+        model.addAttribute("autor", "");
+
+        return "cetatean/news.jsp";
+    }
+    
+    @RequestMapping(value = "/news/{pagina}/{continut}&{autor}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('CETATEAN')")
+    public String newsPageSelected(@PathVariable(value = "pagina") String strPaginaCurenta, 
+            @PathVariable(value = "continut") String paramContinut, 
+            @PathVariable(value = "autor") String paramAutor,
+            Model model) {
+        String continut = (paramContinut == null) ? "" : paramContinut;
+        String autor = (paramAutor == null) ? "" : paramAutor;
+        
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrStiri = Integer.valueOf(stireDao.getNumarStiri(continut, autor)).doubleValue();
+        totalPagini = Math.ceil(nrStiri / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+
+        List<Stire> listaStiri = stireDao.getListaStiriPePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1,
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), continut, autor);
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaStiri", listaStiri);
+        model.addAttribute("continut", continut);
+        model.addAttribute("autor", autor);
 
         return "cetatean/news.jsp";
     }
@@ -160,8 +197,6 @@ public class CetateanController {
             } else {
                 oreActive = false;
             }
-            
-            oreActive = true;
 
             votatDeja = referendumDao.referendumVotatDeUtilizator(userCurent, referendum);
 
