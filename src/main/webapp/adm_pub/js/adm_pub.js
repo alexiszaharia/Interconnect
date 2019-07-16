@@ -8,18 +8,29 @@ function adaugareReferendum(numeUser) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
-    var intrebare = $('#intrebare_referendum').val();
+    var form = $('#form_adaugare_referendum')[0];
+    var formData = new FormData(form);
+
+//    var intrebare = $('#intrebare_referendum').val();
     var data = $('#data_referendum').val();
-    var optiuni = getOptiuni();
+    var prezentare = $('#prezentare_referendum').val();
+//    var optiuni = getOptiuni();
 
     $('#alerta_adaugare_referendum').removeClass('alert-success');
     $('#alerta_adaugare_referendum').removeClass('alert-danger');
     $('#alerta_adaugare_referendum').empty();
 
-    if (intrebare == '') {
+//    if (intrebare == '') {
+//        $('#alerta_adaugare_referendum').css('display', '');
+//        $('#alerta_adaugare_referendum').addClass('alert-danger');
+//        $('#alerta_adaugare_referendum').html('Intrebarea nu poate fi goala!');
+//        return;
+//    }
+
+    if (prezentare == '') {
         $('#alerta_adaugare_referendum').css('display', '');
         $('#alerta_adaugare_referendum').addClass('alert-danger');
-        $('#alerta_adaugare_referendum').html('Intrebarea nu poate fi goala!');
+        $('#alerta_adaugare_referendum').html('Trebuie completata o prezentare!');
         return;
     }
 
@@ -30,25 +41,36 @@ function adaugareReferendum(numeUser) {
         return;
     }
 
-    if (optiuni == false) {
+    if (nrIntrebariSalvate == 0) {
         $('#alerta_adaugare_referendum').css('display', '');
         $('#alerta_adaugare_referendum').addClass('alert-danger');
-        $('#alerta_adaugare_referendum').html('Trebuie completate cel putin doua optiuni de raspuns!');
+        $('#alerta_adaugare_referendum').html('Nu s-a salvat nici o intrebare!');
         return;
     }
 
-    var datePost = '&intrebare=' + intrebare + '&data=' + data
-            + '&optiuni=' + optiuni + '&nume_user=' + numeUser;
+//    if (optiuni == false) {
+//        $('#alerta_adaugare_referendum').css('display', '');
+//        $('#alerta_adaugare_referendum').addClass('alert-danger');
+//        $('#alerta_adaugare_referendum').html('Trebuie completate cel putin doua optiuni de raspuns!');
+//        return;
+//    }
+
+//    var datePost = '&intrebare=' + intrebare + '&data=' + data
+//            + '&optiuni=' + optiuni + '&nume_user=' + numeUser;
+
+    formData.append('intrebari', intrebariSalvate);
+    formData.append('nume_user', numeUser);
 
     $.ajax({
         type: 'POST',
         url: root + "/adaugare_referendum",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        contentType: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         dataType: 'json',
-        data: datePost,
+        data: formData,
+        processData: false,
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 $('#intrebare_referendum').val('');
@@ -63,7 +85,11 @@ function adaugareReferendum(numeUser) {
 
                 $('#alerta_adaugare_referendum').css('display', '');
                 $('#alerta_adaugare_referendum').addClass('alert-danger');
-                $('#alerta_adaugare_referendum').html('Nu s-a adaugat referendumul! EROARE SERVER');
+                if (data.mesajUtilizator == '' || data.mesajUtilizator == undefined) {
+                    $('#alerta_adaugare_referendum').html('Nu s-a adaugat referendumul! EROARE SERVER');
+                } else {
+                    $('#alerta_adaugare_referendum').html(data.mesajUtilizator);
+                }
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -80,13 +106,13 @@ function getOptiuni() {
     var optiuni = '';
     var nrOptiuniCuContinut = 0;
     $('input[name=optiune]').each(function (i, elem) {
-        if (optiuni == '') {
-            optiuni += $(this).val();
-        } else {
-            optiuni += ';' + $(this).val();
-        }
         if ($(this).val() != '') {
             nrOptiuniCuContinut++;
+            if (optiuni == '') {
+                optiuni += $(this).val();
+            } else {
+                optiuni += ';' + $(this).val();
+            }
         }
     });
 
@@ -97,7 +123,7 @@ function getOptiuni() {
     }
 }
 
-function adaugareStire(numeUser) {
+function adaugareStire(data) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
@@ -138,26 +164,27 @@ function adaugareStire(numeUser) {
         $('#alerta_adaugare_stire').html('Continutul stirii nu poate fi gol!');
         return;
     }
-    
+
     if ($('#checkbox_anunt').is(':checked')) {
         anuntStire = 1;
     } else {
         anuntStire = 0;
     }
 
-    var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
-            + '&tipStire=' + tipStire + '&continutStire=' + continutStire
-            + '&numeUser=' + numeUser + '&anuntStire=' + anuntStire;
+//    var datePost = '&titluStire=' + titluStire + '&previewStire=' + previewStire
+//            + '&tipStire=' + tipStire + '&continutStire=' + continutStire
+//            + '&numeUser=' + numeUser + '&anuntStire=' + anuntStire;
 
     $.ajax({
         type: 'POST',
         url: root + "/adaugare_stire",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        contentType: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         dataType: 'json',
-        data: datePost,
+        data: data,
+        processData: false,
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 $('#titlu_stire').val('');

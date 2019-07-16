@@ -8,6 +8,7 @@ package ro.interconnect.db;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import ro.interconnect.beans.Atasament;
 
 /**
  *
@@ -22,6 +23,7 @@ public class Initiativa {
     private String dataPublicareFormatata;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private List<Opinie> listaOpinii;
+    private List<Atasament> listaAtasamente;
 
     public Initiativa() {
     }
@@ -87,6 +89,12 @@ public class Initiativa {
     public void setListaOpinii(List<Opinie> listaOpinii) {
         this.listaOpinii = listaOpinii;
     }
-    
-    
+
+    public List<Atasament> getListaAtasamente() {
+        return listaAtasamente;
+    }
+
+    public void setListaAtasamente(List<Atasament> listaAtasamente) {
+        this.listaAtasamente = listaAtasamente;
+    }
 }

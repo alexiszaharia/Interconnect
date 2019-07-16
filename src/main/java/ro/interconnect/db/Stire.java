@@ -7,6 +7,9 @@ package ro.interconnect.db;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import ro.interconnect.beans.Atasament;
 
 /**
  *
@@ -23,6 +26,7 @@ public class Stire {
     private String dataPublicareFormatata;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private int anunt;
+    private List<Atasament> listaAtasamente = new ArrayList<>();
 
     public Stire() {
     }
@@ -128,5 +132,13 @@ public class Stire {
 
     public void setAnunt(int anunt) {
         this.anunt = anunt;
+    }
+
+    public List<Atasament> getListaAtasamente() {
+        return listaAtasamente;
+    }
+
+    public void setListaAtasamente(List<Atasament> listaAtasamente) {
+        this.listaAtasamente = listaAtasamente;
     }
 }

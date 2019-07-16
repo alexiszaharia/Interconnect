@@ -25,13 +25,17 @@ public class InitiativaDao {
     @Autowired
     private MapperInitiativa mapperInitiativa;
     
-    public List<Initiativa> getListaInitiativePePagina(int nrStart, int nrFinal, RoluriUtilizatori roluriUtilizatori) {
+    public List<Initiativa> getListaInitiativePePagina(int nrStart, int nrFinal, RoluriUtilizatori roluriUtilizatori, 
+            String continut, String autor) {
         String sql = "SELECT i.id, i.titlu_initiativa, i.text_initiativa, i.data_publicare, "
                 + "u.id, u.username, r.role "
                 + "FROM initiative i "
                 + "JOIN users u ON i.user_publicare = u.id "
                 + "JOIN user_roles r ON u.id = r.userid "
                 + "WHERE r.role LIKE ? "
+                + "AND (i.text_initiativa LIKE '%" + continut + "%' "
+                + "OR i.titlu_initiativa LIKE '%" + continut + "%') "
+                + "AND u.username LIKE '%" + autor + "%' "
                 + "ORDER BY i.data_publicare DESC";
         List<Initiativa> listaInitiative = new ArrayList<Initiativa>();
         List<Initiativa> listaInitiativeFinal = new ArrayList<Initiativa>();
@@ -69,12 +73,31 @@ public class InitiativaDao {
 
         return initiativa;
     }
+    
+    public int getIdInitiativa(String titlu, String continut) {
+        String sql = "SELECT id "
+                + "FROM initiative "
+                + "WHERE titlu_initiativa LIKE ? AND text_initiativa LIKE ?";
+        int id = 0;
+        
+        try {
+            id = jdbcTemplate.queryForObject(sql, Integer.class, titlu, continut);
+        } catch (Exception e) {
+            System.out.println("Eroare getIdInitiativa: " + e.getMessage());
+            return 0;
+        }
+        
+        return id;
+    }
 
-    public int getNumarInitiative(RoluriUtilizatori roluriUtilizatori) {
+    public int getNumarInitiative(RoluriUtilizatori roluriUtilizatori, String continut, String autor) {
         String sql = "SELECT COUNT(*) FROM initiative i "
                 + "JOIN users u ON i.user_publicare = u.id "
                 + "JOIN user_roles r ON u.id = r.userid "
-                + "WHERE r.role LIKE ?";
+                + "WHERE r.role LIKE ? "
+                + "AND (i.text_initiativa LIKE '%" + continut + "%' "
+                + "OR i.titlu_initiativa LIKE '%" + continut + "%') "
+                + "AND u.username LIKE '%" + autor + "%'";
         int nrInitiative;
         try {
             nrInitiative = jdbcTemplate.queryForObject(sql, Integer.class, roluriUtilizatori.getRol());

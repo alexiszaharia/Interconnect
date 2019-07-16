@@ -7,7 +7,9 @@ package ro.interconnect.db;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import ro.interconnect.beans.Atasament;
 
 /**
  *
@@ -15,13 +17,14 @@ import java.util.List;
  */
 public class Referendum {
     private int idReferendum;
-    private String intrebare;
+    private String prezentare;
     private Date dataReferendum;
     private String dataReferendumFormatata;
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     private User userCreare;
-    private List<OptiuneReferendum> listaOptiuni;
+    private List<IntrebareReferendum> listaIntrebari;
     private double procentParticipare;
+    private List<Atasament> listaAtasamente = new ArrayList<>();
 
     public int getIdReferendum() {
         return idReferendum;
@@ -31,12 +34,12 @@ public class Referendum {
         this.idReferendum = idReferendum;
     }
 
-    public String getIntrebare() {
-        return intrebare;
+    public String getPrezentare() {
+        return prezentare;
     }
 
-    public void setIntrebare(String intrebare) {
-        this.intrebare = intrebare;
+    public void setPrezentare(String prezentare) {
+        this.prezentare = prezentare;
     }
 
     public Date getDataReferendum() {
@@ -69,12 +72,12 @@ public class Referendum {
         this.userCreare = userCreare;
     }
 
-    public List<OptiuneReferendum> getListaOptiuni() {
-        return listaOptiuni;
+    public List<IntrebareReferendum> getListaIntrebari() {
+        return listaIntrebari;
     }
 
-    public void setListaOptiuni(List<OptiuneReferendum> listaOptiuni) {
-        this.listaOptiuni = listaOptiuni;
+    public void setListaIntrebari(List<IntrebareReferendum> listaIntrebari) {
+        this.listaIntrebari = listaIntrebari;
     }
 
     public double getProcentParticipare() {
@@ -83,5 +86,13 @@ public class Referendum {
 
     public void setProcentParticipare(double procentParticipare) {
         this.procentParticipare = procentParticipare;
+    }
+
+    public List<Atasament> getListaAtasamente() {
+        return listaAtasamente;
+    }
+
+    public void setListaAtasamente(List<Atasament> listaAtasamente) {
+        this.listaAtasamente = listaAtasamente;
     }
 }

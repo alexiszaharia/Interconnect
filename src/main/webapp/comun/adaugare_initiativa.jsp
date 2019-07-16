@@ -38,22 +38,44 @@
                     <div id="alerta_adaugare_initiativa" class="alert" 
                          style="display: none; width: 90%;">
                     </div>
-                    <div class="form-group" style="width: 90%;">
-                        <label for="titlu_initiativa">Titlu initiativa:</label>
-                        <input type="text" class="form-control" id="titlu_initiativa"/>
-                        <label for="continut_initiativa">Text initiativa:</label>
-                        <textarea class="form-control" rows="10" id="continut_initiativa"></textarea>
-                    </div>
-                    <button class="btn btn-primary" 
+                    <form id="form_adaugare_initiativa" method="POST" 
+                          enctype="multipart/form-data">
+                        <div class="form-group" style="width: 90%;">
+                            <label for="titlu_initiativa">Titlu initiativa:</label>
+                            <input type="text" class="form-control" id="titlu_initiativa" 
+                                   name="titlu_initiativa"/>
+                            <label for="files">Atasamente:</label>
+                            <input type="file" id="files" name="files" multiple="multiple"/>
+                            <br/>
+                            <label for="continut_initiativa">Text initiativa:</label>
+                            <textarea class="form-control" rows="10" id="continut_initiativa"
+                                      name="continut_initiativa"></textarea>
+                            <input type="hidden" name="nume_user" 
+                                   value="${pageContext.request.userPrincipal.name}"/>
+                        </div>
+                        <input type="submit" id="btnSubmit" class="btn btn-primary" value="Trimitere"/>
+                    </form>
+<!--                    <button class="btn btn-primary" 
                             onclick="adaugareInitiativa('${pageContext.request.userPrincipal.name}')">
                         Trimitere
-                    </button>
+                    </button>-->
                 </div>
             </div>
         </div>
 
         <script>
             var root = '<%=request.getContextPath()%>';
+            
+            $(document).ready(function () {
+                $('#btnSubmit').click(function (event) {
+                    event.preventDefault();
+                    
+                    var form = $('#form_adaugare_initiativa')[0];
+                    var data = new FormData(form);
+                    
+                    adaugareInitiativa(data);
+                });
+            });
         </script>
     </body>
 </html>

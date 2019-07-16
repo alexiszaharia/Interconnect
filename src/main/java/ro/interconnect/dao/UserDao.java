@@ -26,7 +26,8 @@ public class UserDao {
     private MapperUser mapperUser;
     
     public User getUser(int id) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare, "
+                + "u.nume, u.prenume, u.varsta, u.judet, u.localitate, u.adresa, u.sex "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
                 + "WHERE u.id = ?";
         User user = null;
@@ -41,7 +42,8 @@ public class UserDao {
     }
     
     public User getUser(String username) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare, "
+                + "u.nume, u.prenume, u.varsta, u.judet, u.localitate, u.adresa, u.sex "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
                 + "WHERE u.username LIKE ?";
         User user = null;
@@ -55,10 +57,12 @@ public class UserDao {
         return user;
     }
     
-    public List<User> getListaUseriPePagina(int nrStart, int nrFinal) {
-        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare "
+    public List<User> getListaUseriPePagina(int nrStart, int nrFinal, String continut) {
+        String sql = "SELECT u.id, u.username, u.password, u.enabled, r.role, u.data_ultima_notificare, "
+                + "u.nume, u.prenume, u.varsta, u.judet, u.localitate, u.adresa, u.sex "
                 + "FROM users u JOIN user_roles r ON u.id = r.userid "
-                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA' "
+                + "WHERE (role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA') "
+                + "AND u.username LIKE '%" + continut + "%' "
                 + "ORDER BY u.username ASC";
         List<User> listaUseri = new ArrayList<User>();
         List<User> listaUseriFinal = new ArrayList<User>();
@@ -93,9 +97,10 @@ public class UserDao {
         return nrUtilizatori;
     }
     
-    public int getNrCetateniAdministratie() {
+    public int getNrCetateniAdministratie(String continut) {
         String sql = "SELECT COUNT(*) FROM user_roles "
-                + "WHERE role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA'";
+                + "WHERE (role LIKE 'ROLE_CETATEAN' OR role LIKE 'ROLE_ADMINISTRATIE_PUBLICA') "
+                + "AND username LIKE '%" + continut + "%'";
         int nrUtilizatori = 0;
         
         try {
@@ -109,15 +114,18 @@ public class UserDao {
     }
     
     public boolean insertUser(User user) {
-        String sql = "INSERT INTO users (username, password, enabled) "
-                + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, enabled, nume, prenume, varsta, "
+                + "judet, localitate, adresa, sex) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sql2 = "INSERT INTO user_roles (userid, role, username) "
                 + "VALUES (?, ?, ?)";
         boolean ok = true;
         
         try {
             int rows = jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), 
-                    (user.isEnabled()) ? 1 : 0);
+                    (user.isEnabled()) ? 1 : 0, user.getNumePersoana(), user.getPrenumePersoana(), 
+                    user.getVarsta(), user.getJudet(), user.getLocalitate(), user.getAdresa(), 
+                    user.getSex());
             if (rows == 0) {
                 return false;
             }
@@ -176,7 +184,8 @@ public class UserDao {
     
     public boolean updateUserCuParola (User user) {
         String sql = "UPDATE users "
-                + "SET username = ?, password = ? "
+                + "SET username = ?, password = ?, nume = ?, prenume = ?, varsta = ?, judet = ?, "
+                + "localitate = ?, adresa = ?, sex = ? "
                 + "WHERE id = ?";
         String sql2 = "UPDATE user_roles "
                 + "SET username = ?, role = ? "
@@ -184,7 +193,10 @@ public class UserDao {
         boolean ok = true;
         
         try {
-            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), user.getId());
+            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getPassword(), 
+                    user.getNumePersoana(), user.getPrenumePersoana(), user.getVarsta(), 
+                    user.getJudet(), user.getLocalitate(), user.getAdresa(), user.getSex(), 
+                    user.getId());
             if (rows == 0) {
                 return false;
             }
@@ -206,7 +218,8 @@ public class UserDao {
     
     public boolean updateUserFaraParola (User user) {
         String sql = "UPDATE users "
-                + "SET username = ? "
+                + "SET username = ?, nume = ?, prenume = ?, varsta = ?, judet = ?, "
+                + "localitate = ?, adresa = ?, sex = ? "
                 + "WHERE id = ?";
         String sql2 = "UPDATE user_roles "
                 + "SET username = ?, role = ? "
@@ -214,7 +227,9 @@ public class UserDao {
         boolean ok = true;
         
         try {
-            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getId());
+            int rows = jdbcTemplate.update(sql, user.getUserName(), user.getNumePersoana(), 
+                    user.getPrenumePersoana(), user.getVarsta(), user.getJudet(), 
+                    user.getLocalitate(), user.getAdresa(), user.getSex(), user.getId());
             if (rows == 0) {
                 return false;
             }

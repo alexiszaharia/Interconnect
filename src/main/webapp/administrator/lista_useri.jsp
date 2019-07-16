@@ -35,6 +35,15 @@
                 </div>
                 <div class="col-sm-10">
                     <h1>Lista utilizatori</h1>
+                    <div id="filtre" class="form-inline">
+                        <div class="form-group">
+                            <label for="continut">Utilizator:</label>
+                            <input type="text" class="form-control" id="continut" 
+                                   value="${continut}">
+                        </div>
+                        <button id="btnCautare" class="btn btn-primary">Cautare</button>
+                    </div>
+                    <br/>
                     <div class="table-responsive" style="width: 90%;">
                         <table class="table table-bordered">
                             <thead>
@@ -80,25 +89,35 @@
                     </div>
                     <ul class="pager">
                         <li <c:if test="${previousPage <= 0}">class="disabled"</c:if>>
-                            <a href="<%=request.getContextPath()%>/pagina_listare_useri/${previousPage}">Previous</a>
-                        </li>
-                        <ul class="pagination">
+                            <a href="<%=request.getContextPath()%>/pagina_listare_useri/${previousPage}<c:if test="${!continut.isEmpty()}">/${continut}</c:if>">Previous</a>
+                            </li>
+                            <ul class="pagination">
                             <c:forEach var="item" begin="1" end="${totalPagini}">
                                 <li <c:if test="${item == paginaCurenta}">class="active"</c:if>>
-                                    <a href="<%=request.getContextPath()%>/pagina_listare_useri/${item}">${item}</a>
-                                </li>
+                                    <a href="<%=request.getContextPath()%>/pagina_listare_useri/${item}<c:if test="${!continut.isEmpty()}">/${continut}</c:if>">${item}</a>
+                                    </li>
                             </c:forEach>
                         </ul>
                         <li <c:if test="${nextPage > totalPagini}">class="disabled"</c:if>>
-                            <a href="<%=request.getContextPath()%>/pagina_listare_useri/${nextPage}">Next</a>
-                        </li>
-                    </ul>
+                            <a href="<%=request.getContextPath()%>/pagina_listare_useri/${nextPage}<c:if test="${!continut.isEmpty()}">/${continut}</c:if>">Next</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <script>
+            <script>
             var root = '<%=request.getContextPath()%>';
-            
+
+            $('#btnCautare').click(function () {
+                var continut = $('#continut').val();
+
+                if (continut != '') {
+                    window.location = root + '/pagina_listare_useri/1/' + continut;
+                } else {
+                    window.location = root + '/pagina_listare_useri/1';
+                }
+            });
+
             $(document).ready(function () {
                 $('tr').each(function () {
                     var specific = $(this).attr('specific');
@@ -112,16 +131,16 @@
                 $('td[specific]').each(function () {
                     var specific = $(this).attr('specific');
                     var functie = $(this).attr('functie');
-                    
+
                     if (functie == 1) {
-                        $(this).html('<i class="fas fa-check-square" ' 
-                                + 'style="color: green; font-size: 18px; cursor: pointer;" ' 
-                                + 'onclick="activeazaDezactiveazaUser(0, ' + specific + ')" ' 
+                        $(this).html('<i class="fas fa-check-square" '
+                                + 'style="color: green; font-size: 18px; cursor: pointer;" '
+                                + 'onclick="activeazaDezactiveazaUser(0, ' + specific + ')" '
                                 + 'title="Activat"></i>');
                     } else if (functie == 0) {
-                        $(this).html('<i class="fas fa-window-close" ' 
-                                + 'style="color: red; font-size: 18px; cursor: pointer;" ' 
-                                + 'onclick="activeazaDezactiveazaUser(1, ' + specific + ')" ' 
+                        $(this).html('<i class="fas fa-window-close" '
+                                + 'style="color: red; font-size: 18px; cursor: pointer;" '
+                                + 'onclick="activeazaDezactiveazaUser(1, ' + specific + ')" '
                                 + 'title="Dezactivat"></i>');
                     }
                 });

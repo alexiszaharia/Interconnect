@@ -36,48 +36,80 @@ public class AdministratorController {
     
     @RequestMapping(value = "/pagina_listare_useri", method = RequestMethod.GET)
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public String newsPage(Model model) {
+    public String listUsersPage(Model model) {
         int paginaCurenta = 1;
         double totalPagini;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrStiri = Integer.valueOf(userDao.getNrCetateniAdministratie()).doubleValue();
-        totalPagini = Math.ceil(nrStiri / nrElemPePagina);
+        double nrUseri = Integer.valueOf(userDao.getNrCetateniAdministratie("")).doubleValue();
+        totalPagini = Math.ceil(nrUseri / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
         }
         
-        List<User> listaUseri = userDao.getListaUseriPePagina(1, configurareDetalii.getNrElemPePagina());
+        List<User> listaUseri = userDao.getListaUseriPePagina(1, configurareDetalii.getNrElemPePagina(), "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaUseri", listaUseri);
+        model.addAttribute("continut", "");
         
         return "administrator/lista_useri.jsp";
     }
     
     @RequestMapping(value = "/pagina_listare_useri/{pagina}", method = RequestMethod.GET)
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    public String newsPageSelected(@PathVariable(value = "pagina") String strPaginaCurenta, Model model) {
+    public String listUsersPageSelected(@PathVariable(value = "pagina") String strPaginaCurenta, Model model) {
         int paginaCurenta = Integer.valueOf(strPaginaCurenta);
         double totalPagini;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
-        double nrStiri = Integer.valueOf(userDao.getNrCetateniAdministratie()).doubleValue();
-        totalPagini = Math.ceil(nrStiri / nrElemPePagina);
+        double nrUseri = Integer.valueOf(userDao.getNrCetateniAdministratie("")).doubleValue();
+        totalPagini = Math.ceil(nrUseri / nrElemPePagina);
         if (totalPagini == 0) {
             totalPagini = 1;
         }
         
         List<User> listaUseri = userDao.getListaUseriPePagina(
                 (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
-                paginaCurenta * configurareDetalii.getNrElemPePagina());
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), "");
         model.addAttribute("paginaCurenta", paginaCurenta);
         model.addAttribute("totalPagini", totalPagini);
         model.addAttribute("previousPage", paginaCurenta - 1);
         model.addAttribute("nextPage", paginaCurenta + 1);
         model.addAttribute("listaUseri", listaUseri);
+        model.addAttribute("continut", "");
+        
+        return "administrator/lista_useri.jsp";
+    }
+    
+    @RequestMapping(value = "/pagina_listare_useri/{pagina}/{continut}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public String listUsersPageSelected(@PathVariable(value = "pagina") String strPaginaCurenta, 
+            @PathVariable(value = "continut") String paramContinut,
+            Model model) {
+        String continut = (paramContinut == null) ? "" : paramContinut;
+        
+        int paginaCurenta = Integer.valueOf(strPaginaCurenta);
+        double totalPagini;
+        
+        double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
+        double nrUseri = Integer.valueOf(userDao.getNrCetateniAdministratie(continut)).doubleValue();
+        totalPagini = Math.ceil(nrUseri / nrElemPePagina);
+        if (totalPagini == 0) {
+            totalPagini = 1;
+        }
+        
+        List<User> listaUseri = userDao.getListaUseriPePagina(
+                (paginaCurenta - 1) * configurareDetalii.getNrElemPePagina() + 1, 
+                paginaCurenta * configurareDetalii.getNrElemPePagina(), continut);
+        model.addAttribute("paginaCurenta", paginaCurenta);
+        model.addAttribute("totalPagini", totalPagini);
+        model.addAttribute("previousPage", paginaCurenta - 1);
+        model.addAttribute("nextPage", paginaCurenta + 1);
+        model.addAttribute("listaUseri", listaUseri);
+        model.addAttribute("continut", continut);
         
         return "administrator/lista_useri.jsp";
     }

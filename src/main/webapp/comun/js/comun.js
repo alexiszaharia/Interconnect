@@ -137,7 +137,7 @@ function selectareLikeDislike(numeUser, idInitiativa, like) {
     });
 }
 
-function adaugareInitiativa(numeUser) {
+function adaugareInitiativa(data) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
@@ -162,18 +162,19 @@ function adaugareInitiativa(numeUser) {
         return;
     }
 
-    var datePost = '&nume_user=' + numeUser + '&titlu=' + titlu
-            + '&continut=' + continut;
+//    var datePost = '&nume_user=' + numeUser + '&titlu=' + titlu
+//            + '&continut=' + continut;
 
     $.ajax({
         type: 'POST',
         url: root + "/adaugare_initiativa",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+        contentType: false,
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         dataType: 'json',
-        data: datePost,
+        data: data,
+        processData: false,
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 $('#titlu_initiativa').val('');
@@ -218,7 +219,7 @@ function getDetaliiReferendum(idReferendum) {
         success: function (data, textStatus, jqXHR) {
             if (data.codRetur == 0) {
                 var referendum = data.objectResponse;
-                $('#intrebare_referendum').text(referendum.intrebare);
+//                $('#intrebare_referendum').text(referendum.intrebare);
                 $('#creator_referendum').append(referendum.userCreare.userName);
                 $('#data_referendum').append(referendum.dataReferendumFormatata);
 
@@ -231,18 +232,21 @@ function getDetaliiReferendum(idReferendum) {
                         + referendum.procentParticipare + '%'
                         + '</div>'
                         + '</div>';
-                $.each(referendum.listaOptiuni, function (i, elem) {
-                    htmlStatistici += '<p style="font-size: 16px; font-weight: bold;">Procent la raspuns <b>' 
-                            + elem.textOptiune + '</b></p>';
-                    htmlStatistici += '<div class="progress">'
-                            + '<div class="progress-bar ' + getTypeProgressBar(elem.procentVot) + '" role="progressbar" '
-                            + 'aria-valuenow="' + elem.procentVot + '" '
-                            + 'aria-valuemin="0" aria-valuemax="100" style="width:' + elem.procentVot + '%">'
-                            + elem.procentVot + '%'
-                            + '</div>'
-                            + '</div>';
+                $.each(referendum.listaIntrebari, function (index, intrebare) {
+                    htmlStatistici += '<p style="font-size: 16px; font-weight: bold;">' + intrebare.textIntrebare + '</p>';
+                    $.each(intrebare.listaOptiuniReferendum, function (i, elem) {
+                        htmlStatistici += '<p style="font-size: 12px; font-weight: bold;">Procent la raspuns <b>'
+                                + elem.textOptiune + '</b></p>';
+                        htmlStatistici += '<div class="progress">'
+                                + '<div class="progress-bar ' + getTypeProgressBar(elem.procentVot) + '" role="progressbar" '
+                                + 'aria-valuenow="' + elem.procentVot + '" '
+                                + 'aria-valuemin="0" aria-valuemax="100" style="width:' + elem.procentVot + '%">'
+                                + elem.procentVot + '%'
+                                + '</div>'
+                                + '</div>';
+                    });
                 });
-                
+
                 $('#statistici_referendum').html(htmlStatistici);
             } else {
                 console.log("Eroare la obtinerea informatiilor despre referendum: "

@@ -39,6 +39,14 @@
                         <p class="categorie">AUTOR: ${initiativa.getUserPublicare().getUserName()}</p>
                         <p class="data">${initiativa.getDataPublicareFormatata()}</p>
                         <br/>
+                        <c:if test="${initiativa.getListaAtasamente().size() > 0}">
+                            <p style="font-weight: bold">Lista de atasamente:</p>
+                            <c:forEach items="${initiativa.getListaAtasamente()}" var="item">
+                                <a href="<%=request.getContextPath()%>${item.getCale()}" target="_blank">${item.getDenumire()}</a>
+                                <br/>
+                            </c:forEach>
+                            <br/><br/>
+                        </c:if>
                         <div style="margin-bottom: 50px;">
                             ${initiativa.getTextInitiativa()}
                         </div>

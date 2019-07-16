@@ -4,6 +4,7 @@
     Author     : Alexis
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -35,6 +36,14 @@
                         <p class="categorie">CATEGORIE: ${stire.getTipStire()}</p>
                         <p class="data">${stire.getDataPublicareFormatata()}</p>
                         <br/>
+                        <c:if test="${stire.getListaAtasamente().size() > 0}">
+                            <p style="font-weight: bold">Lista de atasamente:</p>
+                            <c:forEach items="${stire.getListaAtasamente()}" var="item">
+                                <a href="<%=request.getContextPath()%>${item.getCale()}" target="_blank">${item.getDenumire()}</a>
+                                <br/>
+                            </c:forEach>
+                            <br/><br/>
+                        </c:if>
                         <div style="margin-bottom: 50px;">
                             ${stire.getContinutStire()}
                         </div>

@@ -25,7 +25,7 @@ public class MapperReferendum implements RowMapper<Referendum>{
         Referendum referendum = new Referendum();
         User user = new User();
         referendum.setIdReferendum(rs.getInt(1));
-        referendum.setIntrebare(rs.getString(2));
+        referendum.setPrezentare(rs.getString(2));
         referendum.setDataReferendum(rs.getDate(3));
         referendum.setDataReferendumFormatata();
         

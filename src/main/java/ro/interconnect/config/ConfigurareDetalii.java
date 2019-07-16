@@ -11,6 +11,7 @@ package ro.interconnect.config;
  */
 public class ConfigurareDetalii {
     private int nrElemPePagina;
+    private String caleFisiere;
 
     public ConfigurareDetalii() {
     }
@@ -21,6 +22,14 @@ public class ConfigurareDetalii {
 
     public void setNrElemPePagina(int nrElemPePagina) {
         this.nrElemPePagina = nrElemPePagina;
+    }
+
+    public String getCaleFisiere() {
+        return caleFisiere;
+    }
+
+    public void setCaleFisiere(String caleFisiere) {
+        this.caleFisiere = caleFisiere;
     }
     
     

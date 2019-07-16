@@ -19,6 +19,13 @@ public class User {
     private boolean enabled;
     private RoluriUtilizatori role;
     private Timestamp ultimaNotificare;
+    private String numePersoana;
+    private String prenumePersoana;
+    private int varsta;
+    private String judet;
+    private String localitate;
+    private String adresa;
+    private String sex;
 
     public User() {
     }
@@ -77,5 +84,61 @@ public class User {
 
     public void setUltimaNotificare(Timestamp ultimaNotificare) {
         this.ultimaNotificare = ultimaNotificare;
+    }
+
+    public String getNumePersoana() {
+        return numePersoana;
+    }
+
+    public void setNumePersoana(String numePersoana) {
+        this.numePersoana = numePersoana;
+    }
+
+    public String getPrenumePersoana() {
+        return prenumePersoana;
+    }
+
+    public void setPrenumePersoana(String prenumePersoana) {
+        this.prenumePersoana = prenumePersoana;
+    }
+
+    public int getVarsta() {
+        return varsta;
+    }
+
+    public void setVarsta(int varsta) {
+        this.varsta = varsta;
+    }
+
+    public String getJudet() {
+        return judet;
+    }
+
+    public void setJudet(String judet) {
+        this.judet = judet;
+    }
+
+    public String getLocalitate() {
+        return localitate;
+    }
+
+    public void setLocalitate(String localitate) {
+        this.localitate = localitate;
+    }
+
+    public String getAdresa() {
+        return adresa;
+    }
+
+    public void setAdresa(String adresa) {
+        this.adresa = adresa;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }

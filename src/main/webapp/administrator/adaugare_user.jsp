@@ -41,6 +41,18 @@
                     <div id="alerta_adaugare_utilizator" class="alert" 
                          style="display: none; width: 90%;">
                     </div>
+                    <form id="form_import_csv" method="POST" 
+                          enctype="multipart/form-data">
+                        <div class="form-group" style="width: 90%;">
+                            <label for="files_csv">Atasamente:</label>
+                            <input type="file" id="files_csv" name="files_csv" multiple="multiple"/>
+                        </div>
+                        <button id="btnImport" class="btn btn-success">
+                            <i class="fas fa-upload"></i>
+                            Import csv utilizatori
+                        </button>
+                    </form>
+                    <hr/>
                     <div class="form-group" style="width: 90%;">
                         <label for="nume_user">Nume user:</label>
                         <input type="text" class="form-control" id="nume_user"/>
@@ -59,6 +71,31 @@
                             <option value="ROLE_ADMINISTRATIE_PUBLICA">ADMINISTRATIE PUBLICA</option>
                             <option value="ROLE_ADMINISTRATOR">ADMINISTRATOR</option>
                         </select>
+                        <br/>
+                        <label for="nume_persoana">Nume persoana:</label>
+                        <input type="text" class="form-control" id="nume_persoana"/>
+                        <br/>
+                        <label for="prenume_persoana">Prenume persoana:</label>
+                        <input type="text" class="form-control" id="prenume_persoana"/>
+                        <br/>
+                        <label for="varsta_persoana">Varsta persoana:</label>
+                        <input type="number" class="form-control" id="varsta_persoana"
+                               min="18" max="100"/>
+                        <br/>
+                        <label for="judet">Judet:</label>
+                        <input type="text" class="form-control" id="judet"/>
+                        <br/>
+                        <label for="localitate">Localitate:</label>
+                        <input type="text" class="form-control" id="localitate"/>
+                        <br/>
+                        <label for="adresa">Adresa:</label>
+                        <input type="text" class="form-control" id="adresa"/>
+                        <br/>
+                        <label for="sex">Sex:</label>
+                        <select class="form-control" id="sex">
+                            <option value="M">Masculin</option>
+                            <option value="F">Feminin</option>
+                        </select>
                     </div>
                     <button class="btn btn-primary" 
                             onclick="adaugareUtilizator()">
@@ -70,6 +107,17 @@
 
         <script>
             var root = '<%=request.getContextPath()%>';
+            
+            $(document).ready(function () {
+                $('#btnImport').click(function (event) {    
+                    event.preventDefault();
+                    
+                    var form = $('#form_import_csv')[0];
+                    var data = new FormData(form);
+                    
+                    importUtilizatori(data);
+                });
+            });
         </script>
     </body>
 </html>
