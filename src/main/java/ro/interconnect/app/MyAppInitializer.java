@@ -12,7 +12,7 @@ import ro.interconnect.config.WebSecurityConfig;
 
 /**
  *
- * @author Alexis
+ * @author AlexisDaniel
  */
 public class MyAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer{
 
