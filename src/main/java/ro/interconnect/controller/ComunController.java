@@ -62,7 +62,6 @@ public class ComunController {
     public String initiativeAdministratiePage(Model model) {
         int paginaCurenta = 1;
         double totalPagini;
-		int alexis;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
