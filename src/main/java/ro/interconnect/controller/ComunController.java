@@ -61,7 +61,7 @@ public class ComunController {
     @PreAuthorize("hasRole('CETATEAN') or hasRole('ADMINISTRATIE_PUBLICA')")
     public String initiativeAdministratiePage(Model model) {
         int paginaCurenta = 1;
-        double totalPagini;
+        long totalPagini;
         
         double nrElemPePagina = Integer.valueOf(configurareDetalii.getNrElemPePagina()).doubleValue();
         double nrInitiative = Integer.valueOf(initiativaDao.getNumarInitiative(
